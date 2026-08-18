@@ -248,27 +248,49 @@
     }
 
     /* ─────────────────────────────────────────────────────────
-       BILLING HELP BOX (Agentforce #4 — General Billing Explanation)
+       BILLING HELP DRAWER (Agentforce — General Billing Explanation)
     ───────────────────────────────────────────────────────── */
-    .billing-help-box {
+    .billing-drawer {
       background: var(--af-bg);
       border: 1px solid var(--af-border);
       border-radius: 8px;
-      padding: 1.5rem;
       position: relative;
+      overflow: hidden;
     }
-    .billing-help-box::before {
+    .billing-drawer::before {
       content: '';
       position: absolute; left: 0; top: 0; bottom: 0;
       width: 3px; background: var(--af-accent);
       border-radius: 8px 0 0 8px;
+      z-index: 1;
     }
+    .billing-drawer-trigger {
+      width: 100%; padding: 1.25rem 1.5rem;
+      background: none; border: none; text-align: left;
+      cursor: pointer; display: block;
+      transition: background .15s;
+    }
+    .billing-drawer-trigger:hover { background: rgba(133,38,255,0.04); }
     .bh-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
     }
+    .bh-header-left { flex: 1; }
     .bh-title { font-size: 15px; font-weight: 700; color: var(--entergy-purple-dk); margin-bottom: 3px; }
     .bh-subtitle { font-size: 12.5px; color: rgba(53,47,60,0.65); }
+    .bh-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .drawer-chevron {
+      width: 18px; height: 18px; flex-shrink: 0;
+      color: var(--entergy-purple);
+      transition: transform 0.25s ease;
+    }
+    .billing-drawer-trigger[aria-expanded="true"] .drawer-chevron { transform: rotate(180deg); }
+    .billing-drawer-panel {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 1.5rem;
+    }
+    .billing-drawer-panel.open { max-height: 700px; padding-bottom: 1.25rem; }
 
     /* ─────────────────────────────────────────────────────────
        DIVIDER SECTION
@@ -348,78 +370,6 @@
     }
     .card-cta-btn:hover { background: var(--entergy-purple-600); }
 
-    /* ─────────────────────────────────────────────────────────
-       AGENTFORCE #2 — PAY BY PHONE: Live Hours
-    ───────────────────────────────────────────────────────── */
-    .live-hours {
-      display: flex; align-items: center; gap: 6px;
-      margin-bottom: 0.75rem;
-      padding: 0.5rem 0.75rem;
-      background: white;
-      border: 1px solid var(--af-border);
-      border-radius: 5px;
-    }
-    .status-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    }
-    .status-dot.open { background: #1f9a6f; box-shadow: 0 0 0 3px rgba(31,154,111,0.2); }
-    .status-dot.closed { background: var(--entergy-red); box-shadow: 0 0 0 3px rgba(193,11,43,0.2); }
-    .hours-text { font-size: 12px; font-weight: 600; color: var(--entergy-text); }
-    .hours-text .closes { color: rgba(53,47,60,0.55); font-weight: 400; }
-    .hours-expand-btn {
-      margin-left: auto; background: none; border: none;
-      font-size: 11px; font-weight: 600; color: var(--entergy-purple); cursor: pointer;
-    }
-    .hours-detail {
-      display: none; padding: 0.625rem;
-      background: white; border: 1px solid var(--af-border);
-      border-radius: 5px; margin-bottom: 0.75rem;
-      font-size: 12px;
-    }
-    .hours-detail.open { display: block; }
-    .hours-row { display: flex; justify-content: space-between; padding: 2px 0; }
-    .hours-row.today { font-weight: 600; color: var(--entergy-purple-dk); }
-
-    /* ─────────────────────────────────────────────────────────
-       AGENTFORCE #1 — PAY IN PERSON: Zip Lookup
-    ───────────────────────────────────────────────────────── */
-    .zip-lookup-area { margin-top: 0; }
-    .zip-input-row {
-      display: flex; gap: 0.5rem; margin-bottom: 0.75rem;
-    }
-    .zip-input {
-      flex: 1;
-      border: 1.5px solid var(--entergy-purple-mid);
-      border-radius: 4px;
-      padding: 0.5rem 0.75rem;
-      font-family: var(--font); font-size: 13px;
-      outline: none;
-    }
-    .zip-input:focus { border-color: var(--entergy-purple); }
-    .zip-btn {
-      padding: 0.5rem 1rem;
-      background: var(--entergy-purple);
-      color: white; border: none; border-radius: 4px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
-      transition: background .15s; white-space: nowrap;
-    }
-    .zip-btn:hover { background: var(--entergy-purple-600); }
-
-    .centers-list { display: none; }
-    .centers-list.visible { display: block; }
-    .center-item {
-      padding: 0.625rem 0;
-      border-bottom: 1px solid var(--entergy-gray-border);
-      font-size: 12px;
-    }
-    .center-item:last-child { border-bottom: none; }
-    .center-name { font-weight: 700; color: var(--entergy-text); margin-bottom: 2px; }
-    .center-addr { color: rgba(53,47,60,0.6); margin-bottom: 2px; }
-    .center-meta { display: flex; gap: 0.75rem; align-items: center; margin-top: 4px; }
-    .center-miles { color: var(--entergy-purple); font-weight: 600; }
-    .center-status-open { color: #1f9a6f; font-weight: 600; }
-    .center-status-closed { color: var(--entergy-red); font-weight: 600; }
-    .center-phone { color: rgba(53,47,60,0.55); }
 
     /* ─────────────────────────────────────────────────────────
        NEED HELP SECTION (Agentforce #3 — Program Finder)
@@ -577,7 +527,6 @@
       .primary-payment { grid-template-columns: 1fr; }
       .options-grid { grid-template-columns: repeat(2, 1fr); }
       .help-section-inner { grid-template-columns: 1fr; gap: 1.5rem; }
-      .design-principles-panel { display: none; }
     }
     @media (max-width: 600px) {
       .options-grid { grid-template-columns: 1fr; }
@@ -655,37 +604,38 @@
         <p class="btn-login-note">Requires myEntergy login</p>
       </div>
 
-      <!-- Right: Agentforce — General Billing Explanation -->
-      <!-- DESIGN PRINCIPLE #3: Standardized structure (welcome + scope + examples) -->
-      <!-- DESIGN PRINCIPLE #4: Transparency disclosure shown below -->
-      <!-- DESIGN PRINCIPLE #1: Agent named "Entergy Agent" (< 10 chars + "Agent") -->
-      <div class="billing-help-box">
-        <div class="bh-header">
-          <div>
-            <div class="bh-title">Have a billing question?</div>
-            <div class="bh-subtitle">Get answers instantly — no login required.</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
-            <div class="af-badge">
-              <!-- Agentforce sparkle icon -->
-              <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/>
-              </svg>
-              Agentforce
+      <!-- Right: Agentforce — Billing Help Drawer (collapsed by default) -->
+      <div class="billing-drawer">
+        <button class="billing-drawer-trigger" id="billing-trigger" aria-expanded="false" aria-controls="billing-panel" onclick="toggleBillingDrawer()">
+          <div class="bh-header">
+            <div class="bh-header-left">
+              <div class="bh-title">Have a billing question?</div>
+              <div class="bh-subtitle">Get answers instantly — no login required.</div>
             </div>
-            <span class="no-login-tag">✓ No login required</span>
+            <div class="bh-header-right">
+              <div class="af-badge">
+                <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+                Agentforce
+              </div>
+              <span class="no-login-tag">✓ No login required</span>
+              <svg class="drawer-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4,6 9,12 14,6"/>
+              </svg>
+            </div>
           </div>
+        </button>
+        <div class="billing-drawer-panel" id="billing-panel" role="region" aria-labelledby="billing-trigger">
+          <p class="af-intro">Select a topic to get an instant answer from Entergy Agent:</p>
+          <div class="quick-chips" id="billing-chips">
+            <button class="quick-chip" onclick="showBillingTopic('highbill', this)">Why is my bill high?</button>
+            <button class="quick-chip" onclick="showBillingTopic('budget', this)">Budget billing options</button>
+            <button class="quick-chip" onclick="showBillingTopic('duedate', this)">When is my payment due?</button>
+            <button class="quick-chip" onclick="showBillingTopic('readbill', this)">How to read my bill</button>
+            <button class="quick-chip" onclick="showBillingTopic('late', this)">Late payment questions</button>
+          </div>
+          <div class="af-response" id="billing-response"></div>
+          <p class="af-disclosure">Entergy Agent may make mistakes. Review responses for accuracy. For account-specific details, <a href="#">log in to myEntergy</a> or <a href="#">contact us</a>.</p>
         </div>
-        <p class="af-intro">Select a topic to get an instant answer from Entergy Agent:</p>
-        <div class="quick-chips" id="billing-chips">
-          <button class="quick-chip" onclick="showBillingTopic('highbill', this)">Why is my bill high?</button>
-          <button class="quick-chip" onclick="showBillingTopic('budget', this)">Budget billing options</button>
-          <button class="quick-chip" onclick="showBillingTopic('duedate', this)">When is my payment due?</button>
-          <button class="quick-chip" onclick="showBillingTopic('readbill', this)">How to read my bill</button>
-          <button class="quick-chip" onclick="showBillingTopic('late', this)">Late payment questions</button>
-        </div>
-        <div class="af-response" id="billing-response"></div>
-        <p class="af-disclosure">Entergy Agent may make mistakes. Review responses for accuracy. For account-specific details, <a href="#">log in to myEntergy</a> or <a href="#">contact us</a>.</p>
       </div>
     </div>
 
@@ -704,113 +654,30 @@
     ─────────────────────────────────────────────────────── -->
     <div class="options-grid">
 
-      <!-- ┌──────────────────────────────────────────────────┐
-           │  AGENTFORCE #2 — Pay by Phone (Live Service Hours) │
-           │  Use Case: Service Details — Hours, offices, contacts │
-           └──────────────────────────────────────────────────┘ -->
-      <!-- DESIGN PRINCIPLE #5: Consistent visual branding (AF badge on all agent zones) -->
-      <div class="option-card af-card">
-        <div class="card-badge-row">
-          <div class="af-badge">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
-            Agentforce
-          </div>
-        </div>
+      <!-- Pay by Phone -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
         <div class="card-icon">
-          <!-- Phone icon -->
           <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/>
           </svg>
         </div>
         <h4>Pay by Phone</h4>
         <p>Pay your bill by credit card, debit card or electronic check by calling our automated line.</p>
-
-        <!-- Agentforce: Live service hours -->
-        <div class="af-zone" style="margin-bottom: 0.875rem;">
-          <div class="af-zone-header" style="margin-bottom: 0.5rem;">
-            <span class="af-zone-title">
-              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#501799"/></svg>
-              Entergy Agent · Live Availability
-            </span>
-          </div>
-          <div class="live-hours">
-            <span class="status-dot" id="phone-status-dot"></span>
-            <span class="hours-text" id="phone-status-text"></span>
-            <button class="hours-expand-btn" onclick="toggleHours(this)">See all hours ▾</button>
-          </div>
-          <div class="hours-detail" id="hours-detail">
-            <div class="hours-row" id="hr-mon">
-              <span>Monday</span><span>7:00 AM – 8:00 PM CT</span>
-            </div>
-            <div class="hours-row" id="hr-tue">
-              <span>Tuesday</span><span>7:00 AM – 8:00 PM CT</span>
-            </div>
-            <div class="hours-row" id="hr-wed">
-              <span>Wednesday</span><span>7:00 AM – 8:00 PM CT</span>
-            </div>
-            <div class="hours-row" id="hr-thu">
-              <span>Thursday</span><span>7:00 AM – 8:00 PM CT</span>
-            </div>
-            <div class="hours-row" id="hr-fri">
-              <span>Friday</span><span>7:00 AM – 8:00 PM CT</span>
-            </div>
-            <div class="hours-row">
-              <span>Saturday</span><span>8:00 AM – 5:00 PM CT</span>
-            </div>
-            <div class="hours-row">
-              <span>Sunday</span><span>Closed</span>
-            </div>
-            <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #eee;">
-              <strong>Automated line (24/7):</strong> 1-800-ENTERGY<br>
-              <strong>Live agent:</strong> See hours above
-            </div>
-          </div>
-        </div>
-
         <a class="card-cta" href="#">Learn More →</a>
       </div>
 
-
-      <!-- ┌──────────────────────────────────────────────────────────┐
-           │  AGENTFORCE #1 — Pay in Person (Nearest Payment Center)  │
-           │  Use Case: Nearest payment center — Zip lookup           │
-           └──────────────────────────────────────────────────────────┘ -->
-      <!-- DESIGN PRINCIPLE #2: Teachability — example input shown (placeholder text) -->
-      <!-- DESIGN PRINCIPLE #3: Scope boundary (zip-only, no account data needed) -->
-      <div class="option-card af-card" style="grid-column: span 1;">
-        <div class="card-badge-row">
-          <div class="af-badge">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
-            Agentforce
-          </div>
-        </div>
+      <!-- Pay in Person -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
         <div class="card-icon">
-          <!-- Location pin icon -->
           <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
           </svg>
         </div>
         <h4>Pay in Person</h4>
         <p>Find a Quick Pay Center near you — open 7 days a week with extended hours at many locations.</p>
-
-        <!-- Agentforce: Zip code lookup -->
-        <div class="af-zone" style="margin-bottom: 0.75rem;">
-          <div class="af-zone-header">
-            <span class="af-zone-title">
-              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#501799"/></svg>
-              Find Nearest Centers
-            </span>
-            <span class="no-login-tag">✓ No login required</span>
-          </div>
-          <div class="zip-lookup-area">
-            <div class="zip-input-row">
-              <input type="text" class="zip-input" id="zip-input" placeholder="Enter ZIP code (e.g. 70806)" maxlength="5" onkeypress="if(event.key==='Enter')findCenters()">
-              <button class="zip-btn" onclick="findCenters()">Find Centers</button>
-            </div>
-            <div class="centers-list" id="centers-list"></div>
-          </div>
-          <p class="af-disclosure" style="margin-top: 0.5rem;">Entergy Agent may make mistakes. Verify hours before visiting. <a href="#" style="color:var(--entergy-purple);">View full directory →</a></p>
-        </div>
+        <a class="card-cta" href="#">Find Quick Pay Center →</a>
       </div>
 
 
@@ -981,101 +848,13 @@
        SCRIPTS — Simulated Agentforce Responses
   ══════════════════════════════════════════════════════════ -->
   <script>
-    // ── Initialize live phone hours on load ───────────────
-    (function initPhoneHours() {
-      const now = new Date();
-      const h = now.getHours(); // using local time as approximation for CT
-      const day = now.getDay(); // 0=Sun, 6=Sat
-      let isOpen = false;
-      let statusText = '';
-
-      if (day === 0) {
-        isOpen = false;
-        statusText = 'Closed today · Opens Mon 7 AM CT';
-      } else if (day === 6) {
-        isOpen = (h >= 8 && h < 17);
-        statusText = isOpen
-          ? `Open now · Closes 5 PM CT today`
-          : (h < 8 ? `Opens 8 AM CT today` : `Closed · Opens Mon 7 AM CT`);
-      } else {
-        isOpen = (h >= 7 && h < 20);
-        statusText = isOpen
-          ? `Open now · Closes 8 PM CT`
-          : (h < 7 ? `Opens 7 AM CT today` : `Closed · Opens tomorrow 7 AM CT`);
-      }
-
-      const dot = document.getElementById('phone-status-dot');
-      const txt = document.getElementById('phone-status-text');
-      dot.className = 'status-dot ' + (isOpen ? 'open' : 'closed');
-      txt.innerHTML = `<span style="color:${isOpen ? '#1f9a6f' : '#C10B2B'}; font-weight:700;">${isOpen ? 'Open now' : 'Closed'}</span> &nbsp;<span class="closes">${statusText.replace(/^(Open now|Closed) · /, '')}</span>`;
-
-      // Highlight today's row
-      const dayNames = ['', 'hr-mon','hr-tue','hr-wed','hr-thu','hr-fri'];
-      if (day >= 1 && day <= 5) {
-        const row = document.getElementById(dayNames[day]);
-        if (row) row.classList.add('today');
-      }
-    })();
-
-    function toggleHours(btn) {
-      const detail = document.getElementById('hours-detail');
-      const isOpen = detail.classList.toggle('open');
-      btn.textContent = isOpen ? 'Hide hours ▴' : 'See all hours ▾';
-    }
-
-    // ── Zip code lookup (simulated) ────────────────────────
-    const mockCenters = {
-      '70806': [
-        { name: 'Baton Rouge – Perkins Rd', addr: '9150 Perkins Rd, Baton Rouge, LA 70810', miles: '1.2 mi', open: true, hours: 'M–F 8AM–6PM', phone: '(225) 555-0134' },
-        { name: 'WalMart Money Center – Siegen Ln', addr: '5741 Siegen Ln, Baton Rouge, LA 70809', miles: '3.1 mi', open: true, hours: 'Daily 8AM–8PM', phone: '(225) 555-0210' },
-        { name: 'Entergy Service Center – Main', addr: '4809 Jefferson Hwy, New Orleans, LA 70121', miles: '5.8 mi', open: false, hours: 'M–F 8AM–5PM', phone: '(504) 555-0188' },
-      ],
-      '77002': [
-        { name: 'Entergy Texas – Houston Downtown', addr: '350 Pine St, Houston, TX 77002', miles: '0.4 mi', open: true, hours: 'M–F 7:30AM–5:30PM', phone: '(713) 555-0101' },
-        { name: 'HEB Payment Center – Midtown', addr: '2300 Travis St, Houston, TX 77006', miles: '1.9 mi', open: true, hours: 'Daily 7AM–11PM', phone: null },
-        { name: 'CVS Money Services – Bellaire', addr: '5200 Bellaire Blvd, Houston, TX 77401', miles: '4.2 mi', open: true, hours: 'Daily 8AM–9PM', phone: null },
-      ],
-      '39201': [
-        { name: 'Entergy Mississippi – Jackson HQ', addr: '308 E Pearl St, Jackson, MS 39201', miles: '0.3 mi', open: false, hours: 'M–F 8AM–5PM', phone: '(601) 555-0150' },
-        { name: 'Dollar General – Fortification St', addr: '1010 Fortification St, Jackson, MS 39202', miles: '1.1 mi', open: true, hours: 'Daily 8AM–10PM', phone: null },
-        { name: 'Family Dollar – Lynch St', addr: '1602 Lynch St, Jackson, MS 39203', miles: '2.3 mi', open: true, hours: 'Daily 8AM–9PM', phone: null },
-      ]
-    };
-
-    function findCenters() {
-      const zip = document.getElementById('zip-input').value.trim();
-      const list = document.getElementById('centers-list');
-
-      if (zip.length !== 5 || !/^\d{5}$/.test(zip)) {
-        list.innerHTML = '<div style="font-size:12px;color:#C10B2B;padding:0.4rem 0;">Please enter a valid 5-digit ZIP code.</div>';
-        list.classList.add('visible');
-        return;
-      }
-
-      // Simulate loading state
-      list.classList.add('visible');
-      list.innerHTML = '<div style="font-size:12px;color:rgba(53,47,60,0.5);padding:0.4rem 0;">Finding centers near ' + zip + '…</div>';
-
-      setTimeout(function() {
-        const centers = mockCenters[zip] || [
-          { name: 'Quick Pay Center – Nearest', addr: `Results for ZIP ${zip}`, miles: '2.4 mi', open: true, hours: 'M–F 8AM–6PM', phone: '1-800-ENTERGY' },
-          { name: 'Entergy Authorized Agent', addr: `Near ZIP ${zip}`, miles: '3.8 mi', open: false, hours: 'M–Sa 8AM–5PM', phone: null },
-        ];
-
-        list.innerHTML = centers.map(function(c) {
-          return `<div class="center-item">
-            <div class="center-name">${c.name}</div>
-            <div class="center-addr">${c.addr}</div>
-            <div class="center-meta">
-              <span class="center-miles">${c.miles}</span>
-              <span class="${c.open ? 'center-status-open' : 'center-status-closed'}">${c.open ? '● Open' : '○ Closed'}</span>
-              <span class="center-phone">${c.hours}</span>
-              ${c.phone ? `<span class="center-phone">${c.phone}</span>` : ''}
-            </div>
-          </div>`;
-        }).join('') +
-        `<div style="margin-top:8px;"><a href="#" style="font-size:11px;font-weight:700;color:var(--entergy-purple);">View all locations near ${zip} →</a></div>`;
-      }, 600);
+    // ── Billing drawer toggle ──────────────────────────────
+    function toggleBillingDrawer() {
+      const trigger = document.getElementById('billing-trigger');
+      const panel = document.getElementById('billing-panel');
+      const expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      panel.classList.toggle('open', !expanded);
     }
 
     // ── Billing topic responses ────────────────────────────
