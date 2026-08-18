@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make a Payment – Entergy | Agentforce Concept</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─────────────────────────────────────────────────────────
+       ENTERGY BRAND TOKENS (sourced from live CSS)
+    ───────────────────────────────────────────────────────── */
+    :root {
+      --entergy-purple:     #8526FF;
+      --entergy-purple-dk:  #501799;
+      --entergy-purple-xdk: #18151D;
+      --entergy-purple-lt:  #F3E9FF;
+      --entergy-purple-mid: #CEA8FF;
+      --entergy-purple-600: #6A1ECC;
+      --entergy-red:        #C10B2B;
+      --entergy-white:      #FFFFFF;
+      --entergy-gray-bg:    #F8F8F8;
+      --entergy-gray-border:#CCCCCC;
+      --entergy-text:       #18151D;
+      --entergy-text-lt:    rgba(53,47,60,1);
+      --entergy-link:       #8526FF;
+      --font:               'Montserrat', sans-serif;
+
+      /* Agentforce visual tokens — intentionally use Entergy purple
+         so enhancements feel native, not bolted on */
+      --af-accent:          #8526FF;
+      --af-bg:              #F9F5FF;
+      --af-border:          #CEA8FF;
+      --af-chip-bg:         #F3E9FF;
+      --af-chip-text:       #501799;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--entergy-text);
+      background: var(--entergy-white);
+      line-height: 1.5;
+    }
+    a { color: var(--entergy-link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { font-family: var(--font); cursor: pointer; }
+
+    /* ─────────────────────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────────────────────── */
+    .site-header {
+      background: var(--entergy-white);
+      border-bottom: 1px solid var(--entergy-gray-border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; height: 72px;
+    }
+    .entergy-logo svg { display: block; }
+
+    .main-nav { display: flex; gap: 0.25rem; }
+    .main-nav a {
+      padding: 0.5rem 1rem;
+      font-size: 13px; font-weight: 600;
+      color: var(--entergy-text);
+      border-radius: 4px;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .main-nav a:hover { background: var(--entergy-purple-lt); color: var(--entergy-purple); text-decoration: none; }
+    .main-nav a.active { color: var(--entergy-purple); }
+
+    .header-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-login {
+      padding: 0.5rem 1.25rem;
+      border: 2px solid var(--entergy-purple);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--entergy-purple);
+      font-weight: 700; font-size: 13px;
+      transition: all .15s;
+    }
+    .btn-login:hover { background: var(--entergy-purple); color: white; }
+
+    /* ─────────────────────────────────────────────────────────
+       HERO BANNER
+    ───────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #18151D 0%, #2D0D5C 50%, #501799 100%);
+      padding: 3rem 1.5rem;
+      color: white;
+    }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .breadcrumb {
+      font-size: 12px; color: var(--entergy-purple-mid);
+      margin-bottom: 0.75rem; letter-spacing: 0.03em;
+    }
+    .breadcrumb a { color: var(--entergy-purple-mid); }
+    .breadcrumb span { margin: 0 0.4em; opacity: 0.6; }
+    .hero h1 {
+      font-size: 2rem; font-weight: 700; color: white;
+      margin-bottom: 0.4rem;
+    }
+    .hero p { color: rgba(255,255,255,0.75); font-size: 14px; }
+
+    /* ─────────────────────────────────────────────────────────
+       PAGE LAYOUT
+    ───────────────────────────────────────────────────────── */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    /* ─────────────────────────────────────────────────────────
+       PRIMARY PAYMENT SECTION
+    ───────────────────────────────────────────────────────── */
+    .primary-payment {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      align-items: start;
+    }
+    .primary-cta-box {
+      background: var(--entergy-white);
+      border: 1px solid var(--entergy-gray-border);
+      border-radius: 6px;
+      padding: 2rem;
+    }
+    .primary-cta-box h2 {
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .primary-cta-box p {
+      color: rgba(53,47,60,0.75); font-size: 14px; margin-bottom: 1.5rem;
+    }
+    .btn-primary-action {
+      display: block; width: 100%;
+      padding: 1rem;
+      background: var(--entergy-purple);
+      color: white;
+      border: none; border-radius: 4px;
+      font-size: 15px; font-weight: 700;
+      text-align: center; cursor: pointer;
+      transition: background .15s;
+      margin-bottom: 0.75rem;
+    }
+    .btn-primary-action:hover { background: var(--entergy-purple-600); }
+    .btn-login-note {
+      text-align: center; font-size: 12px; color: rgba(53,47,60,0.5);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       AGENTFORCE COMPONENT TOKENS
+    ───────────────────────────────────────────────────────── */
+
+    /* AF Badge chip */
+    .af-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      background: var(--af-chip-bg);
+      border: 1px solid var(--af-border);
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      color: var(--af-chip-text);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .af-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* AF Zone — embedded within an existing card/section */
+    .af-zone {
+      margin-top: 1.25rem;
+      background: var(--af-bg);
+      border: 1px solid var(--af-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+    }
+    .af-zone::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--af-accent);
+      border-radius: 8px 0 0 8px;
+    }
+    .af-zone-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.875rem;
+    }
+    .af-zone-title {
+      font-size: 13px; font-weight: 700; color: var(--entergy-purple-dk);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .af-zone-title svg { width: 14px; height: 14px; }
+    .no-login-tag {
+      font-size: 11px; color: #1f6f6a; font-weight: 600;
+      background: #e8f5f4; border-radius: 3px; padding: 2px 7px;
+    }
+    .af-intro {
+      font-size: 13px; color: var(--entergy-text-lt); margin-bottom: 1rem;
+    }
+    .af-disclosure {
+      font-size: 11px; color: rgba(53,47,60,0.45);
+      margin-top: 0.875rem; font-style: italic;
+      border-top: 1px solid var(--af-border);
+      padding-top: 0.625rem;
+    }
+
+    /* Quick action chips */
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .quick-chip {
+      padding: 0.375rem 0.875rem;
+      background: white;
+      border: 1.5px solid var(--entergy-purple-mid);
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      color: var(--entergy-purple-dk);
+      cursor: pointer; transition: all .15s;
+    }
+    .quick-chip:hover, .quick-chip.active {
+      background: var(--entergy-purple); color: white;
+      border-color: var(--entergy-purple);
+    }
+
+    /* AF inline response */
+    .af-response {
+      display: none;
+      margin-top: 1rem;
+      background: white;
+      border: 1px solid var(--af-border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 13px; line-height: 1.6;
+      color: var(--entergy-text);
+    }
+    .af-response.visible { display: block; }
+    .af-response strong { color: var(--entergy-purple-dk); }
+    .af-response ul { margin: 0.5rem 0 0 1.25rem; }
+    .af-response li { margin-bottom: 0.3rem; }
+    .af-response-footer {
+      margin-top: 0.75rem; padding-top: 0.625rem;
+      border-top: 1px solid var(--entergy-gray-border);
+      font-size: 12px;
+    }
+    .af-response-footer a {
+      color: var(--entergy-purple); font-weight: 600;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       BILLING HELP BOX (Agentforce #4 — General Billing Explanation)
+    ───────────────────────────────────────────────────────── */
+    .billing-help-box {
+      background: var(--af-bg);
+      border: 1px solid var(--af-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .billing-help-box::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--af-accent);
+      border-radius: 8px 0 0 8px;
+    }
+    .bh-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .bh-title { font-size: 15px; font-weight: 700; color: var(--entergy-purple-dk); margin-bottom: 3px; }
+    .bh-subtitle { font-size: 12.5px; color: rgba(53,47,60,0.65); }
+
+    /* ─────────────────────────────────────────────────────────
+       DIVIDER SECTION
+    ───────────────────────────────────────────────────────── */
+    .section-divider { margin: 2rem 0; }
+    .section-divider hr { border: none; border-top: 1px solid var(--entergy-gray-border); }
+    .section-divider p {
+      text-align: center; font-size: 14px; font-weight: 600;
+      color: var(--entergy-text); margin: 1.25rem 0 0.3rem;
+    }
+    .section-divider small {
+      display: block; text-align: center; color: rgba(53,47,60,0.6); font-size: 13px;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       PAYMENT OPTIONS GRID
+    ───────────────────────────────────────────────────────── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Standard option card */
+    .option-card {
+      background: var(--entergy-white);
+      border: 1px solid var(--entergy-gray-border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      display: flex; flex-direction: column;
+      transition: box-shadow .2s;
+    }
+    .option-card:hover { box-shadow: 0 4px 16px rgba(133,38,255,0.1); }
+
+    /* Agentforce-enhanced card gets a subtle indicator */
+    .option-card.af-card {
+      border-color: var(--af-border);
+      background: linear-gradient(180deg, var(--entergy-white) 0%, var(--af-bg) 100%);
+    }
+    .option-card.af-card:hover { box-shadow: 0 4px 16px rgba(133,38,255,0.15); }
+
+    .card-badge-row {
+      margin-bottom: 0.75rem;
+      min-height: 22px;
+    }
+    .card-icon {
+      width: 44px; height: 44px;
+      background: var(--entergy-purple-lt);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.875rem;
+    }
+    .card-icon svg { width: 22px; height: 22px; }
+    .option-card h4 {
+      font-size: 15px; font-weight: 700; margin-bottom: 0.4rem;
+      color: var(--entergy-text);
+    }
+    .option-card p {
+      font-size: 13px; color: rgba(53,47,60,0.7);
+      margin-bottom: 1rem; flex: 1;
+    }
+    .card-cta {
+      display: inline-block;
+      font-size: 13px; font-weight: 700;
+      color: var(--entergy-purple);
+      padding: 0;
+    }
+    .card-cta:hover { text-decoration: underline; }
+    .card-cta-btn {
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      background: var(--entergy-purple);
+      color: white; border: none; border-radius: 4px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background .15s;
+    }
+    .card-cta-btn:hover { background: var(--entergy-purple-600); }
+
+    /* ─────────────────────────────────────────────────────────
+       AGENTFORCE #2 — PAY BY PHONE: Live Hours
+    ───────────────────────────────────────────────────────── */
+    .live-hours {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: white;
+      border: 1px solid var(--af-border);
+      border-radius: 5px;
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .status-dot.open { background: #1f9a6f; box-shadow: 0 0 0 3px rgba(31,154,111,0.2); }
+    .status-dot.closed { background: var(--entergy-red); box-shadow: 0 0 0 3px rgba(193,11,43,0.2); }
+    .hours-text { font-size: 12px; font-weight: 600; color: var(--entergy-text); }
+    .hours-text .closes { color: rgba(53,47,60,0.55); font-weight: 400; }
+    .hours-expand-btn {
+      margin-left: auto; background: none; border: none;
+      font-size: 11px; font-weight: 600; color: var(--entergy-purple); cursor: pointer;
+    }
+    .hours-detail {
+      display: none; padding: 0.625rem;
+      background: white; border: 1px solid var(--af-border);
+      border-radius: 5px; margin-bottom: 0.75rem;
+      font-size: 12px;
+    }
+    .hours-detail.open { display: block; }
+    .hours-row { display: flex; justify-content: space-between; padding: 2px 0; }
+    .hours-row.today { font-weight: 600; color: var(--entergy-purple-dk); }
+
+    /* ─────────────────────────────────────────────────────────
+       AGENTFORCE #1 — PAY IN PERSON: Zip Lookup
+    ───────────────────────────────────────────────────────── */
+    .zip-lookup-area { margin-top: 0; }
+    .zip-input-row {
+      display: flex; gap: 0.5rem; margin-bottom: 0.75rem;
+    }
+    .zip-input {
+      flex: 1;
+      border: 1.5px solid var(--entergy-purple-mid);
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-family: var(--font); font-size: 13px;
+      outline: none;
+    }
+    .zip-input:focus { border-color: var(--entergy-purple); }
+    .zip-btn {
+      padding: 0.5rem 1rem;
+      background: var(--entergy-purple);
+      color: white; border: none; border-radius: 4px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: background .15s; white-space: nowrap;
+    }
+    .zip-btn:hover { background: var(--entergy-purple-600); }
+
+    .centers-list { display: none; }
+    .centers-list.visible { display: block; }
+    .center-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--entergy-gray-border);
+      font-size: 12px;
+    }
+    .center-item:last-child { border-bottom: none; }
+    .center-name { font-weight: 700; color: var(--entergy-text); margin-bottom: 2px; }
+    .center-addr { color: rgba(53,47,60,0.6); margin-bottom: 2px; }
+    .center-meta { display: flex; gap: 0.75rem; align-items: center; margin-top: 4px; }
+    .center-miles { color: var(--entergy-purple); font-weight: 600; }
+    .center-status-open { color: #1f9a6f; font-weight: 600; }
+    .center-status-closed { color: var(--entergy-red); font-weight: 600; }
+    .center-phone { color: rgba(53,47,60,0.55); }
+
+    /* ─────────────────────────────────────────────────────────
+       NEED HELP SECTION (Agentforce #3 — Program Finder)
+    ───────────────────────────────────────────────────────── */
+    .help-section {
+      background: var(--entergy-purple-xdk);
+      border-radius: 8px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      color: white;
+    }
+    .help-section-inner {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 2.5rem; align-items: start;
+    }
+    .help-left h2 {
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .help-left p {
+      font-size: 13.5px; color: rgba(255,255,255,0.7); line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .help-left a {
+      color: var(--entergy-purple-mid); font-weight: 600; font-size: 13px;
+    }
+
+    /* Agentforce Program Finder — embedded in help section */
+    .program-finder {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .program-finder::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--entergy-purple-mid);
+      border-radius: 10px 0 0 10px;
+    }
+    .pf-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .pf-title {
+      font-size: 14px; font-weight: 700; color: white;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .af-badge-dark {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      background: rgba(206,168,255,0.15);
+      border: 1px solid rgba(206,168,255,0.35);
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      color: var(--entergy-purple-mid);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .pf-intro { font-size: 12.5px; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+    .program-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .program-chip {
+      padding: 0.4rem 0.9rem;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(206,168,255,0.4);
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      cursor: pointer; transition: all .15s;
+    }
+    .program-chip:hover, .program-chip.active {
+      background: var(--entergy-purple-mid);
+      color: var(--entergy-purple-xdk);
+      border-color: var(--entergy-purple-mid);
+    }
+    .program-detail {
+      display: none;
+      background: rgba(255,255,255,0.95);
+      color: var(--entergy-text);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 13px; line-height: 1.6;
+    }
+    .program-detail.visible { display: block; }
+    .program-detail h5 {
+      font-size: 13px; font-weight: 700; color: var(--entergy-purple-dk);
+      margin-bottom: 0.5rem; display: flex; align-items: center; gap: 5px;
+    }
+    .program-detail ul { margin: 0.3rem 0 0.75rem 1.2rem; }
+    .program-detail li { margin-bottom: 0.25rem; font-size: 12.5px; }
+    .program-detail-cta {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 0.4rem 1rem;
+      background: var(--entergy-purple);
+      color: white; border: none; border-radius: 4px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      text-decoration: none;
+    }
+    .pf-disclosure {
+      font-size: 11px; color: rgba(255,255,255,0.35);
+      margin-top: 0.875rem; font-style: italic;
+      padding-top: 0.625rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       THE POWER TO CARE SECTION
+    ───────────────────────────────────────────────────────── */
+    .power-to-care {
+      background: var(--entergy-purple);
+      border-radius: 8px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 2rem;
+      color: white;
+    }
+    .ptc-content h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .ptc-content p { font-size: 13.5px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+    .ptc-cta {
+      flex-shrink: 0;
+      padding: 0.75rem 1.5rem;
+      background: white; color: var(--entergy-purple);
+      border: none; border-radius: 4px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: all .15s;
+    }
+    .ptc-cta:hover { background: var(--entergy-purple-lt); }
+
+    /* ─────────────────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────────────────── */
+    .site-footer {
+      background: var(--entergy-purple-xdk);
+      color: rgba(255,255,255,0.6);
+      padding: 2rem 1.5rem;
+      font-size: 12px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 2rem;
+    }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,0.55); font-size: 12px; }
+    .footer-links a:hover { color: white; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 1rem; }
+
+    /* Scrollbar styles */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--entergy-purple-lt); }
+    ::-webkit-scrollbar-thumb { background: var(--entergy-purple-mid); border-radius: 3px; }
+
+    /* ─────────────────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .primary-payment { grid-template-columns: 1fr; }
+      .options-grid { grid-template-columns: repeat(2, 1fr); }
+      .help-section-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .design-principles-panel { display: none; }
+    }
+    @media (max-width: 600px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .main-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="entergy-logo" aria-label="Entergy home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="37" viewBox="0 0 1000 249.98323" role="img" aria-label="Entergy logo">
+          <defs>
+            <linearGradient x1="98.773941" y1="137.549" x2="37.045738" y2="4.5004005" id="logoGrad" gradientTransform="scale(0.89643299,1.1155323)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#8026FF" offset="25%"/>
+              <stop stop-color="#FF1A58" offset="75%"/>
+            </linearGradient>
+          </defs>
+          <g transform="matrix(1.7361111,0,0,1.7361111,0,-0.0167657)" style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1">
+            <g transform="translate(0,0.009657)" style="fill-rule:nonzero">
+              <path d="m 443.21,58.160343 v 10.83 c -2.18385,-1.045893 -4.57876,-1.576194 -7,-1.55 -4.36,0 -16.77,1.9 -16.77,27.15 v 22.399997 h -11.5 V 58.390343 h 11.5 v 9.05 c 2.53,-6.63 9.51,-10.59 17.7,-10.59 2.08911,0.03914 4.15069,0.484062 6.07,1.31 z m -119.67,46.179997 5.25,9.09 c -4.18083,2.8339 -9.10931,4.36187 -14.16,4.39 -12,0 -17.88,-6.55 -17.88,-20.139997 v -29 H 288 v -10.28 h 8.71 v -18.41 h 11.42 v 18.4 h 18.61 v 10.31 h -18.57 v 29.33 c 0,6.309997 4.44,8.679997 8.12,8.679997 2.92,0.01 5.71,-1.53 7.25,-2.37 z M 212.86,91.830343 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.5,10.91 -15.17,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 196,10.08 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.51,10.91 -15.18,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 123.4,6.4 v 24.539997 c 0,22.52 -13.76,31.3 -31.07,31.3 -14.34,0 -25.6,-6.05 -29.64,-19.57 h 11.5 c 2.73,6.76 9.61,9.73 18.14,9.73 12,0 19.92,-5.69 19.92,-21 v -7.23 c -4,7.59 -12.21,12.1 -22.05,12.1 -15.18,0 -29.64,-10.43 -29.64,-30.349997 0,-17.79 13,-30.83 31.54,-30.83 18.54,0 31.25,12.46 31.25,31.31 z m -11.15,-0.47 c 0,-11.86 -8.06,-20.39 -20.15,-20.39 -12.09,0 -20.24,8.53 -20.24,20.39 0,11.86 8.06,19.799997 20.16,19.799997 12.1,0 20.18,-7.949997 20.18,-19.799997 z m 21.32,36.739997 h 11.26 c 2.73,6.64 8.54,9.73 17,9.73 10.91,0 17.9,-5.22 17.9,-18.5 v -8.88 c -3.77,7.22 -10.87,11.22 -19.65,11.22 -14.58,0 -27,-9.13 -27,-29.639997 v -30 h 11.26 v 30 c 0,12.679997 7,19.089997 17.66,19.089997 10.44,0 17.67,-6.64 17.67,-19.089997 v -30 H 576 v 56.999997 c 0,20.4 -12.92,28.58043 -29.16,28.58043 -13.48,0.0596 -24.74,-6.23043 -28.18,-19.51043 z m -283.85,-65.999997 -0.05,8.9 c 3.68,-7.24 10.79,-10.44 19.56,-10.44 14.59,0 27,9.61 27,30.12 V 117.00034 H 270.09 V 86.990343 c 0,-12.69 -7,-19.09 -17.66,-19.09 -10.44,0 -17.67,6.64 -17.67,19.09 V 116.99034 H 223.5 V 58.390343 Z" style="fill:#231f20"/>
+              <path d="m 3.22,65.990343 c 4.14,-17 17.63,-26.55 35.47,-26.55 17.41,0 31.56,9.36 35.69,26.55 z m 102,-27.47 C 95.010053,20.823852 78.185699,7.9104611 58.451099,2.623269 38.7165,-2.6639232 17.689664,0.10857164 0,10.330343 l 9.71,16.82 c 8.966071,-4.606887 18.920211,-6.958124 29,-6.85 33.95,0 57.45,23.94 57.45,56.58 v 7.62 H 2.57 c 3.05,19.149997 17.41,29.809997 36.12,29.809997 13.93,0 23.72,-4.35 30,-13.71 h 22.85 c -4.682967,11.40099 -13.311915,20.7363 -24.31,26.3 l 9.77,16.86 c 17.699206,-10.20998 30.61455,-27.03615 35.90188,-46.773165 5.28734,-19.737012 2.51307,-40.766268 -7.71188,-58.456832 z" style="fill:url(#logoGrad)"/>
+            </g>
+          </g>
+        </svg>
+      </a>
+      <nav class="main-nav">
+        <a href="#" class="active">Billing and payments</a>
+        <a href="#">Outage</a>
+        <a href="#">Usage</a>
+        <a href="#">Service requests</a>
+        <a href="#">Support</a>
+      </nav>
+      <div class="header-actions">
+        <button class="btn-login">Log in</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HERO BANNER
+  ══════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <nav class="breadcrumb">
+        <a href="#">Billing and payments</a>
+        <span>›</span>
+        Make a payment
+      </nav>
+      <h1>Make a payment</h1>
+      <p>Manage your account or get help — no login required for assistance.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE BODY
+  ══════════════════════════════════════════════════════════ -->
+  <main class="page-body">
+
+    <!-- ───────────────────────────────────────────────────
+         ROW 1: Primary Payment CTA + Agentforce Billing Help
+         Use Case: General Billing Explanation (no login)
+    ─────────────────────────────────────────────────────── -->
+    <div class="primary-payment">
+
+      <!-- Left: Standard payment CTA (unchanged) -->
+      <div class="primary-cta-box">
+        <h2>Make a payment</h2>
+        <p>Make a payment on your Entergy account or make a charitable donation.</p>
+        <button class="btn-primary-action" onclick="showLoginPrompt()">Make a payment</button>
+        <p class="btn-login-note">Requires myEntergy login</p>
+      </div>
+
+      <!-- Right: Agentforce — General Billing Explanation -->
+      <!-- DESIGN PRINCIPLE #3: Standardized structure (welcome + scope + examples) -->
+      <!-- DESIGN PRINCIPLE #4: Transparency disclosure shown below -->
+      <!-- DESIGN PRINCIPLE #1: Agent named "Entergy Agent" (< 10 chars + "Agent") -->
+      <div class="billing-help-box">
+        <div class="bh-header">
+          <div>
+            <div class="bh-title">Have a billing question?</div>
+            <div class="bh-subtitle">Get answers instantly — no login required.</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
+            <div class="af-badge">
+              <!-- Agentforce sparkle icon -->
+              <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/>
+              </svg>
+              Agentforce
+            </div>
+            <span class="no-login-tag">✓ No login required</span>
+          </div>
+        </div>
+        <p class="af-intro">Select a topic to get an instant answer from Entergy Agent:</p>
+        <div class="quick-chips" id="billing-chips">
+          <button class="quick-chip" onclick="showBillingTopic('highbill', this)">Why is my bill high?</button>
+          <button class="quick-chip" onclick="showBillingTopic('budget', this)">Budget billing options</button>
+          <button class="quick-chip" onclick="showBillingTopic('duedate', this)">When is my payment due?</button>
+          <button class="quick-chip" onclick="showBillingTopic('readbill', this)">How to read my bill</button>
+          <button class="quick-chip" onclick="showBillingTopic('late', this)">Late payment questions</button>
+        </div>
+        <div class="af-response" id="billing-response"></div>
+        <p class="af-disclosure">Entergy Agent may make mistakes. Review responses for accuracy. For account-specific details, <a href="#">log in to myEntergy</a> or <a href="#">contact us</a>.</p>
+      </div>
+    </div>
+
+    <!-- ───────────────────────────────────────────────────
+         DIVIDER
+    ─────────────────────────────────────────────────────── -->
+    <div class="section-divider">
+      <hr>
+      <p>Or choose from our other convenient payment options.</p>
+      <small>With myEntergy you can choose how you want to pay.</small>
+    </div>
+
+    <!-- ───────────────────────────────────────────────────
+         PAYMENT OPTIONS GRID
+         AF cards: #1 Pay in Person (zip lookup), #2 Pay by Phone (live hours)
+    ─────────────────────────────────────────────────────── -->
+    <div class="options-grid">
+
+      <!-- ┌──────────────────────────────────────────────────┐
+           │  AGENTFORCE #2 — Pay by Phone (Live Service Hours) │
+           │  Use Case: Service Details — Hours, offices, contacts │
+           └──────────────────────────────────────────────────┘ -->
+      <!-- DESIGN PRINCIPLE #5: Consistent visual branding (AF badge on all agent zones) -->
+      <div class="option-card af-card">
+        <div class="card-badge-row">
+          <div class="af-badge">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+            Agentforce
+          </div>
+        </div>
+        <div class="card-icon">
+          <!-- Phone icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/>
+          </svg>
+        </div>
+        <h4>Pay by Phone</h4>
+        <p>Pay your bill by credit card, debit card or electronic check by calling our automated line.</p>
+
+        <!-- Agentforce: Live service hours -->
+        <div class="af-zone" style="margin-bottom: 0.875rem;">
+          <div class="af-zone-header" style="margin-bottom: 0.5rem;">
+            <span class="af-zone-title">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#501799"/></svg>
+              Entergy Agent · Live Availability
+            </span>
+          </div>
+          <div class="live-hours">
+            <span class="status-dot" id="phone-status-dot"></span>
+            <span class="hours-text" id="phone-status-text"></span>
+            <button class="hours-expand-btn" onclick="toggleHours(this)">See all hours ▾</button>
+          </div>
+          <div class="hours-detail" id="hours-detail">
+            <div class="hours-row" id="hr-mon">
+              <span>Monday</span><span>7:00 AM – 8:00 PM CT</span>
+            </div>
+            <div class="hours-row" id="hr-tue">
+              <span>Tuesday</span><span>7:00 AM – 8:00 PM CT</span>
+            </div>
+            <div class="hours-row" id="hr-wed">
+              <span>Wednesday</span><span>7:00 AM – 8:00 PM CT</span>
+            </div>
+            <div class="hours-row" id="hr-thu">
+              <span>Thursday</span><span>7:00 AM – 8:00 PM CT</span>
+            </div>
+            <div class="hours-row" id="hr-fri">
+              <span>Friday</span><span>7:00 AM – 8:00 PM CT</span>
+            </div>
+            <div class="hours-row">
+              <span>Saturday</span><span>8:00 AM – 5:00 PM CT</span>
+            </div>
+            <div class="hours-row">
+              <span>Sunday</span><span>Closed</span>
+            </div>
+            <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #eee;">
+              <strong>Automated line (24/7):</strong> 1-800-ENTERGY<br>
+              <strong>Live agent:</strong> See hours above
+            </div>
+          </div>
+        </div>
+
+        <a class="card-cta" href="#">Learn More →</a>
+      </div>
+
+
+      <!-- ┌──────────────────────────────────────────────────────────┐
+           │  AGENTFORCE #1 — Pay in Person (Nearest Payment Center)  │
+           │  Use Case: Nearest payment center — Zip lookup           │
+           └──────────────────────────────────────────────────────────┘ -->
+      <!-- DESIGN PRINCIPLE #2: Teachability — example input shown (placeholder text) -->
+      <!-- DESIGN PRINCIPLE #3: Scope boundary (zip-only, no account data needed) -->
+      <div class="option-card af-card" style="grid-column: span 1;">
+        <div class="card-badge-row">
+          <div class="af-badge">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+            Agentforce
+          </div>
+        </div>
+        <div class="card-icon">
+          <!-- Location pin icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <h4>Pay in Person</h4>
+        <p>Find a Quick Pay Center near you — open 7 days a week with extended hours at many locations.</p>
+
+        <!-- Agentforce: Zip code lookup -->
+        <div class="af-zone" style="margin-bottom: 0.75rem;">
+          <div class="af-zone-header">
+            <span class="af-zone-title">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#501799"/></svg>
+              Find Nearest Centers
+            </span>
+            <span class="no-login-tag">✓ No login required</span>
+          </div>
+          <div class="zip-lookup-area">
+            <div class="zip-input-row">
+              <input type="text" class="zip-input" id="zip-input" placeholder="Enter ZIP code (e.g. 70806)" maxlength="5" onkeypress="if(event.key==='Enter')findCenters()">
+              <button class="zip-btn" onclick="findCenters()">Find Centers</button>
+            </div>
+            <div class="centers-list" id="centers-list"></div>
+          </div>
+          <p class="af-disclosure" style="margin-top: 0.5rem;">Entergy Agent may make mistakes. Verify hours before visiting. <a href="#" style="color:var(--entergy-purple);">View full directory →</a></p>
+        </div>
+      </div>
+
+
+      <!-- Standard card: Pay by Mail -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <h4>Pay by Mail</h4>
+        <p>Read directions on how to mail us your payment. Include your account number on the check.</p>
+        <a class="card-cta" href="#">View Mailing Instructions →</a>
+      </div>
+
+      <!-- Standard card: Pay by Credit/Debit Card Online -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+        </div>
+        <h4>Pay by Credit / Debit Card Online</h4>
+        <p>Make a secure one-time payment with your Visa, Mastercard, or Discover card — no account required.</p>
+        <a class="card-cta" href="#">Pay Now →</a>
+      </div>
+
+      <!-- Standard card: Pay by moBills™ -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+        </div>
+        <h4>Pay by moBills™</h4>
+        <p>Receive and pay your bill conveniently through the moBills mobile app.</p>
+        <a class="card-cta" href="#">Learn More →</a>
+      </div>
+
+      <!-- Standard card: Pay by Text -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <h4>Pay by Text</h4>
+        <p>Text to pay your bill quickly and securely from your registered mobile number.</p>
+        <a class="card-cta" href="#">Learn More →</a>
+      </div>
+
+      <!-- Standard card: AutoPay -->
+      <div class="option-card">
+        <div class="card-badge-row"></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#501799" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="17 1 21 5 17 9"/>
+            <path d="M3 11V9a4 4 0 014-4h14"/>
+            <polyline points="7 23 3 19 7 15"/>
+            <path d="M21 13v2a4 4 0 01-4 4H3"/>
+          </svg>
+        </div>
+        <h4>AutoPay</h4>
+        <p>Set up automatic monthly payments so you never miss a due date. Enroll in myEntergy.</p>
+        <a class="card-cta" href="#">Enroll in AutoPay →</a>
+      </div>
+
+    </div><!-- /options-grid -->
+
+    <!-- ───────────────────────────────────────────────────
+         NEED HELP SECTION
+         Agentforce #3 — Program Finder (Budget billing, LIHEAP, etc.)
+         Use Case: Program info (unauthenticated)
+    ─────────────────────────────────────────────────────── -->
+    <section class="help-section">
+      <div class="help-section-inner">
+
+        <!-- Left: Standard section content (unchanged) -->
+        <div class="help-left">
+          <h2>Need help paying your bills?</h2>
+          <p>Entergy offers a variety of assistance programs to help customers manage energy costs. You may qualify for programs that lower your monthly bill or provide emergency help.</p>
+          <a href="#">Explore all payment programs →</a>
+        </div>
+
+        <!-- Right: Agentforce Program Finder (embedded in section) -->
+        <!-- DESIGN PRINCIPLE #2: Error tolerance — chips are tappable, no free-text failure modes -->
+        <!-- DESIGN PRINCIPLE #3: Welcome message (pf-intro), scope, escalation (disclosure) -->
+        <div class="program-finder">
+          <div class="pf-header">
+            <span class="pf-title">
+              <svg viewBox="0 0 14 14" fill="none" style="width:14px;height:14px;flex-shrink:0;"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#CEA8FF"/></svg>
+              Entergy Agent · Program Finder
+            </span>
+            <div class="af-badge-dark">
+              <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#CEA8FF"/></svg>
+              Agentforce
+            </div>
+          </div>
+          <p class="pf-intro">Select a program below to instantly learn if you may qualify — no account needed.</p>
+          <div class="program-chips" id="program-chips">
+            <button class="program-chip" onclick="showProgram('budget', this)">Budget Billing</button>
+            <button class="program-chip" onclick="showProgram('liheap', this)">LIHEAP Assistance</button>
+            <button class="program-chip" onclick="showProgram('arrangement', this)">Payment Arrangement</button>
+            <button class="program-chip" onclick="showProgram('levelized', this)">Levelized Billing</button>
+            <button class="program-chip" onclick="showProgram('care', this)">Power to Care</button>
+          </div>
+          <div class="program-detail" id="program-detail"></div>
+          <p class="pf-disclosure">Entergy Agent may make mistakes. Program eligibility and details subject to change. <span style="color:rgba(255,255,255,0.55);">Always confirm with an Entergy representative.</span></p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────
+         THE POWER TO CARE
+    ─────────────────────────────────────────────────────── -->
+    <section class="power-to-care">
+      <div class="ptc-content">
+        <h3>The Power to Care</h3>
+        <p>The Power to Care program provides emergency bill payment assistance to elderly and disabled customers during periods of extreme heat or cold. Donations from Entergy customers and employees fund this program.</p>
+      </div>
+      <button class="ptc-cta">Donate or Apply →</button>
+    </section>
+
+  </main><!-- /page-body -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="30" viewBox="0 0 1000 249.98323" style="display:block;margin-bottom:0.5rem;" aria-label="Entergy logo">
+          <defs>
+            <linearGradient x1="98.773941" y1="137.549" x2="37.045738" y2="4.5004005" id="logoGradFtr" gradientTransform="scale(0.89643299,1.1155323)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#CEA8FF" offset="25%"/>
+              <stop stop-color="#FF7AAA" offset="75%"/>
+            </linearGradient>
+          </defs>
+          <g transform="matrix(1.7361111,0,0,1.7361111,0,-0.0167657)" style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1">
+            <g transform="translate(0,0.009657)" style="fill-rule:nonzero">
+              <path d="m 443.21,58.160343 v 10.83 c -2.18385,-1.045893 -4.57876,-1.576194 -7,-1.55 -4.36,0 -16.77,1.9 -16.77,27.15 v 22.399997 h -11.5 V 58.390343 h 11.5 v 9.05 c 2.53,-6.63 9.51,-10.59 17.7,-10.59 2.08911,0.03914 4.15069,0.484062 6.07,1.31 z m -119.67,46.179997 5.25,9.09 c -4.18083,2.8339 -9.10931,4.36187 -14.16,4.39 -12,0 -17.88,-6.55 -17.88,-20.139997 v -29 H 288 v -10.28 h 8.71 v -18.41 h 11.42 v 18.4 h 18.61 v 10.31 h -18.57 v 29.33 c 0,6.309997 4.44,8.679997 8.12,8.679997 2.92,0.01 5.71,-1.53 7.25,-2.37 z M 212.86,91.830343 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.5,10.91 -15.17,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 196,10.08 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.51,10.91 -15.18,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 123.4,6.4 v 24.539997 c 0,22.52 -13.76,31.3 -31.07,31.3 -14.34,0 -25.6,-6.05 -29.64,-19.57 h 11.5 c 2.73,6.76 9.61,9.73 18.14,9.73 12,0 19.92,-5.69 19.92,-21 v -7.23 c -4,7.59 -12.21,12.1 -22.05,12.1 -15.18,0 -29.64,-10.43 -29.64,-30.349997 0,-17.79 13,-30.83 31.54,-30.83 18.54,0 31.25,12.46 31.25,31.31 z m -11.15,-0.47 c 0,-11.86 -8.06,-20.39 -20.15,-20.39 -12.09,0 -20.24,8.53 -20.24,20.39 0,11.86 8.06,19.799997 20.16,19.799997 12.1,0 20.18,-7.949997 20.18,-19.799997 z m 21.32,36.739997 h 11.26 c 2.73,6.64 8.54,9.73 17,9.73 10.91,0 17.9,-5.22 17.9,-18.5 v -8.88 c -3.77,7.22 -10.87,11.22 -19.65,11.22 -14.58,0 -27,-9.13 -27,-29.639997 v -30 h 11.26 v 30 c 0,12.679997 7,19.089997 17.66,19.089997 10.44,0 17.67,-6.64 17.67,-19.089997 v -30 H 576 v 56.999997 c 0,20.4 -12.92,28.58043 -29.16,28.58043 -13.48,0.0596 -24.74,-6.23043 -28.18,-19.51043 z m -283.85,-65.999997 -0.05,8.9 c 3.68,-7.24 10.79,-10.44 19.56,-10.44 14.59,0 27,9.61 27,30.12 V 117.00034 H 270.09 V 86.990343 c 0,-12.69 -7,-19.09 -17.66,-19.09 -10.44,0 -17.67,6.64 -17.67,19.09 V 116.99034 H 223.5 V 58.390343 Z" style="fill:rgba(255,255,255,0.85)"/>
+              <path d="m 3.22,65.990343 c 4.14,-17 17.63,-26.55 35.47,-26.55 17.41,0 31.56,9.36 35.69,26.55 z m 102,-27.47 C 95.010053,20.823852 78.185699,7.9104611 58.451099,2.623269 38.7165,-2.6639232 17.689664,0.10857164 0,10.330343 l 9.71,16.82 c 8.966071,-4.606887 18.920211,-6.958124 29,-6.85 33.95,0 57.45,23.94 57.45,56.58 v 7.62 H 2.57 c 3.05,19.149997 17.41,29.809997 36.12,29.809997 13.93,0 23.72,-4.35 30,-13.71 h 22.85 c -4.682967,11.40099 -13.311915,20.7363 -24.31,26.3 l 9.77,16.86 c 17.699206,-10.20998 30.61455,-27.03615 35.90188,-46.773165 5.28734,-19.737012 2.51307,-40.766268 -7.71188,-58.456832 z" style="fill:url(#logoGradFtr)"/>
+            </g>
+          </g>
+        </svg>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms and conditions</a>
+          <a href="#">Contact us</a>
+          <a href="#">FAQ's</a>
+          <a href="#">myEntergy video tips</a>
+        </div>
+        <div class="footer-copy">© 2026 Entergy Services, LLC. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS — Simulated Agentforce Responses
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    // ── Initialize live phone hours on load ───────────────
+    (function initPhoneHours() {
+      const now = new Date();
+      const h = now.getHours(); // using local time as approximation for CT
+      const day = now.getDay(); // 0=Sun, 6=Sat
+      let isOpen = false;
+      let statusText = '';
+
+      if (day === 0) {
+        isOpen = false;
+        statusText = 'Closed today · Opens Mon 7 AM CT';
+      } else if (day === 6) {
+        isOpen = (h >= 8 && h < 17);
+        statusText = isOpen
+          ? `Open now · Closes 5 PM CT today`
+          : (h < 8 ? `Opens 8 AM CT today` : `Closed · Opens Mon 7 AM CT`);
+      } else {
+        isOpen = (h >= 7 && h < 20);
+        statusText = isOpen
+          ? `Open now · Closes 8 PM CT`
+          : (h < 7 ? `Opens 7 AM CT today` : `Closed · Opens tomorrow 7 AM CT`);
+      }
+
+      const dot = document.getElementById('phone-status-dot');
+      const txt = document.getElementById('phone-status-text');
+      dot.className = 'status-dot ' + (isOpen ? 'open' : 'closed');
+      txt.innerHTML = `<span style="color:${isOpen ? '#1f9a6f' : '#C10B2B'}; font-weight:700;">${isOpen ? 'Open now' : 'Closed'}</span> &nbsp;<span class="closes">${statusText.replace(/^(Open now|Closed) · /, '')}</span>`;
+
+      // Highlight today's row
+      const dayNames = ['', 'hr-mon','hr-tue','hr-wed','hr-thu','hr-fri'];
+      if (day >= 1 && day <= 5) {
+        const row = document.getElementById(dayNames[day]);
+        if (row) row.classList.add('today');
+      }
+    })();
+
+    function toggleHours(btn) {
+      const detail = document.getElementById('hours-detail');
+      const isOpen = detail.classList.toggle('open');
+      btn.textContent = isOpen ? 'Hide hours ▴' : 'See all hours ▾';
+    }
+
+    // ── Zip code lookup (simulated) ────────────────────────
+    const mockCenters = {
+      '70806': [
+        { name: 'Baton Rouge – Perkins Rd', addr: '9150 Perkins Rd, Baton Rouge, LA 70810', miles: '1.2 mi', open: true, hours: 'M–F 8AM–6PM', phone: '(225) 555-0134' },
+        { name: 'WalMart Money Center – Siegen Ln', addr: '5741 Siegen Ln, Baton Rouge, LA 70809', miles: '3.1 mi', open: true, hours: 'Daily 8AM–8PM', phone: '(225) 555-0210' },
+        { name: 'Entergy Service Center – Main', addr: '4809 Jefferson Hwy, New Orleans, LA 70121', miles: '5.8 mi', open: false, hours: 'M–F 8AM–5PM', phone: '(504) 555-0188' },
+      ],
+      '77002': [
+        { name: 'Entergy Texas – Houston Downtown', addr: '350 Pine St, Houston, TX 77002', miles: '0.4 mi', open: true, hours: 'M–F 7:30AM–5:30PM', phone: '(713) 555-0101' },
+        { name: 'HEB Payment Center – Midtown', addr: '2300 Travis St, Houston, TX 77006', miles: '1.9 mi', open: true, hours: 'Daily 7AM–11PM', phone: null },
+        { name: 'CVS Money Services – Bellaire', addr: '5200 Bellaire Blvd, Houston, TX 77401', miles: '4.2 mi', open: true, hours: 'Daily 8AM–9PM', phone: null },
+      ],
+      '39201': [
+        { name: 'Entergy Mississippi – Jackson HQ', addr: '308 E Pearl St, Jackson, MS 39201', miles: '0.3 mi', open: false, hours: 'M–F 8AM–5PM', phone: '(601) 555-0150' },
+        { name: 'Dollar General – Fortification St', addr: '1010 Fortification St, Jackson, MS 39202', miles: '1.1 mi', open: true, hours: 'Daily 8AM–10PM', phone: null },
+        { name: 'Family Dollar – Lynch St', addr: '1602 Lynch St, Jackson, MS 39203', miles: '2.3 mi', open: true, hours: 'Daily 8AM–9PM', phone: null },
+      ]
+    };
+
+    function findCenters() {
+      const zip = document.getElementById('zip-input').value.trim();
+      const list = document.getElementById('centers-list');
+
+      if (zip.length !== 5 || !/^\d{5}$/.test(zip)) {
+        list.innerHTML = '<div style="font-size:12px;color:#C10B2B;padding:0.4rem 0;">Please enter a valid 5-digit ZIP code.</div>';
+        list.classList.add('visible');
+        return;
+      }
+
+      // Simulate loading state
+      list.classList.add('visible');
+      list.innerHTML = '<div style="font-size:12px;color:rgba(53,47,60,0.5);padding:0.4rem 0;">Finding centers near ' + zip + '…</div>';
+
+      setTimeout(function() {
+        const centers = mockCenters[zip] || [
+          { name: 'Quick Pay Center – Nearest', addr: `Results for ZIP ${zip}`, miles: '2.4 mi', open: true, hours: 'M–F 8AM–6PM', phone: '1-800-ENTERGY' },
+          { name: 'Entergy Authorized Agent', addr: `Near ZIP ${zip}`, miles: '3.8 mi', open: false, hours: 'M–Sa 8AM–5PM', phone: null },
+        ];
+
+        list.innerHTML = centers.map(function(c) {
+          return `<div class="center-item">
+            <div class="center-name">${c.name}</div>
+            <div class="center-addr">${c.addr}</div>
+            <div class="center-meta">
+              <span class="center-miles">${c.miles}</span>
+              <span class="${c.open ? 'center-status-open' : 'center-status-closed'}">${c.open ? '● Open' : '○ Closed'}</span>
+              <span class="center-phone">${c.hours}</span>
+              ${c.phone ? `<span class="center-phone">${c.phone}</span>` : ''}
+            </div>
+          </div>`;
+        }).join('') +
+        `<div style="margin-top:8px;"><a href="#" style="font-size:11px;font-weight:700;color:var(--entergy-purple);">View all locations near ${zip} →</a></div>`;
+      }, 600);
+    }
+
+    // ── Billing topic responses ────────────────────────────
+    const billingTopics = {
+      highbill: {
+        title: 'Why is my bill high?',
+        content: `<p>Several common reasons can cause higher-than-expected bills:</p>
+          <ul>
+            <li><strong>Seasonal changes:</strong> Heating and cooling account for 50–70% of most home energy use. Extreme temperatures sharply increase consumption.</li>
+            <li><strong>More time at home:</strong> Remote work, school breaks, or additional occupants increase usage.</li>
+            <li><strong>HVAC efficiency:</strong> Dirty filters, aging systems, or duct leaks can reduce efficiency by 15–25%.</li>
+            <li><strong>Billing period length:</strong> Some months have more days in the billing cycle.</li>
+            <li><strong>Rate changes:</strong> Fuel costs passed through to bills may vary seasonally.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Use our Home Energy Analyzer to pinpoint your usage →</a></div>`
+      },
+      budget: {
+        title: 'Budget billing options',
+        content: `<p>Entergy offers <strong>Budget Billing</strong> to level out seasonal spikes:</p>
+          <ul>
+            <li>Your annual energy cost is estimated and divided into equal monthly payments.</li>
+            <li>Eliminates high summer or winter bills — you pay the same amount every month.</li>
+            <li>Account is reconciled annually; credits or small adjustments may apply.</li>
+            <li><strong>Enrollment requires a myEntergy account</strong> and 12 months of billing history at your address.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Enroll in Budget Billing (login required) →</a>&nbsp;&nbsp;<a href="#">Call 1-800-ENTERGY to enroll by phone</a></div>`
+      },
+      duedate: {
+        title: 'When is my payment due?',
+        content: `<p>Entergy bills are issued monthly, with a due date approximately <strong>21 days after the billing date</strong>.</p>
+          <ul>
+            <li>Your due date is printed on your bill statement in the top right corner.</li>
+            <li>A late payment charge of 1.5% applies to overdue balances.</li>
+            <li>Disconnection notices are issued if a balance remains unpaid for 45+ days.</li>
+            <li>To see your exact due date, log in to myEntergy or call our automated line.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Pay now (no login required) →</a>&nbsp;&nbsp;<a href="#">Set up AutoPay to never miss a due date</a></div>`
+      },
+      readbill: {
+        title: 'How to read my bill',
+        content: `<p>Your Entergy bill has several key sections:</p>
+          <ul>
+            <li><strong>Account summary:</strong> Previous balance, payments received, current charges, and amount due.</li>
+            <li><strong>Energy usage chart:</strong> Shows your kWh consumption over the past 13 months.</li>
+            <li><strong>Rate schedule:</strong> The tariff code applied to your account (residential, commercial, etc.).</li>
+            <li><strong>Energy charges:</strong> kWh used × your rate. Rates may include fuel adjustment clauses.</li>
+            <li><strong>Taxes & fees:</strong> State/local taxes, franchise fees, and regulatory charges.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">View a sample bill explanation →</a></div>`
+      },
+      late: {
+        title: 'Late payment questions',
+        content: `<p>If you're unable to pay by your due date:</p>
+          <ul>
+            <li><strong>Payment arrangements</strong> are available — call 1-800-ENTERGY before your due date.</li>
+            <li>A <strong>1.5% late charge</strong> is applied to the overdue balance on the next bill.</li>
+            <li><strong>Disconnection</strong> typically occurs 45+ days after the original due date with prior notice.</li>
+            <li><strong>Reconnection fee</strong> applies after disconnection; same-day reconnect available for an additional fee.</li>
+            <li>Customers facing hardship may qualify for <strong>LIHEAP</strong> or <strong>Power to Care</strong> assistance.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Apply for payment assistance →</a>&nbsp;&nbsp;<a href="#">Set up a payment arrangement</a></div>`
+      }
+    };
+
+    function showBillingTopic(key, el) {
+      // Update chip states
+      document.querySelectorAll('#billing-chips .quick-chip').forEach(function(c) {
+        c.classList.remove('active');
+      });
+      el.classList.add('active');
+
+      const topic = billingTopics[key];
+      const resp = document.getElementById('billing-response');
+      resp.innerHTML = `<strong>${topic.title}</strong><br><br>${topic.content}`;
+      resp.classList.add('visible');
+    }
+
+    // ── Program finder responses ────────────────────────────
+    const programs = {
+      budget: {
+        title: '📅 Budget Billing',
+        content: `<ul>
+            <li>Averages your annual bill into equal monthly payments.</li>
+            <li>Eliminates seasonal highs and lows.</li>
+            <li>Reconciled annually — no unexpected catch-up bills.</li>
+            <li><strong>Who qualifies:</strong> Residential customers with 12+ months at address.</li>
+          </ul>
+          <a href="#" class="program-detail-cta">Enroll in Budget Billing →</a>`
+      },
+      liheap: {
+        title: '🏠 LIHEAP Assistance',
+        content: `<ul>
+            <li>Federal Low Income Home Energy Assistance Program.</li>
+            <li>Provides one-time grants toward electric bills for qualifying households.</li>
+            <li><strong>Who qualifies:</strong> Households at or below 150% of federal poverty level.</li>
+            <li><strong>How to apply:</strong> Contact your local Community Action Agency — Entergy does not process applications directly.</li>
+          </ul>
+          <a href="#" class="program-detail-cta">Find your local LIHEAP agency →</a>`
+      },
+      arrangement: {
+        title: '🤝 Payment Arrangement',
+        content: `<ul>
+            <li>Spread a past-due balance over 2–6 months with an installment plan.</li>
+            <li>Prevents disconnection while you catch up.</li>
+            <li><strong>Who qualifies:</strong> Customers with a past-due balance in good standing.</li>
+            <li><strong>How to apply:</strong> Call 1-800-ENTERGY or use the myEntergy portal. Arrangements can be set up before the disconnection date.</li>
+          </ul>
+          <a href="#" class="program-detail-cta">Set up an arrangement (call required) →</a>`
+      },
+      levelized: {
+        title: '⚖️ Levelized Billing',
+        content: `<ul>
+            <li>Similar to Budget Billing — evens out month-to-month variation.</li>
+            <li>Recalculated every 4 months based on actual usage, so it stays accurate.</li>
+            <li>No large reconciliation at year-end.</li>
+            <li><strong>Who qualifies:</strong> Most residential customers — enroll any time in myEntergy.</li>
+          </ul>
+          <a href="#" class="program-detail-cta">Compare Budget vs. Levelized Billing →</a>`
+      },
+      care: {
+        title: '❤️ Power to Care',
+        content: `<ul>
+            <li>Emergency bill payment assistance for elderly (60+) and disabled customers.</li>
+            <li>Funded by Entergy customers and employee donations.</li>
+            <li>Available during periods of extreme heat (summer) or cold (winter).</li>
+            <li><strong>Who qualifies:</strong> Income-qualified elderly or disabled customers facing disconnection.</li>
+            <li><strong>Apply through:</strong> Local community agencies — call 2-1-1 to find your nearest agency.</li>
+          </ul>
+          <a href="#" class="program-detail-cta">Find a Power to Care agency →</a>`
+      }
+    };
+
+    function showProgram(key, el) {
+      // Update chip states
+      document.querySelectorAll('#program-chips .program-chip').forEach(function(c) {
+        c.classList.remove('active');
+      });
+      el.classList.add('active');
+
+      const prog = programs[key];
+      const detail = document.getElementById('program-detail');
+      detail.innerHTML = `<h5>${prog.title}</h5>${prog.content}`;
+      detail.classList.add('visible');
+    }
+
+    // ── Login prompt (for make a payment button) ───────────
+    function showLoginPrompt() {
+      alert('This would redirect to myEntergy login.\n\n(In this prototype, the Agentforce zones on this page are available without login.)');
+    }
+  </script>
+
+</body>
+</html>
