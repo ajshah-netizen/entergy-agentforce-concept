@@ -168,6 +168,23 @@
     .btn-sum-action.primary { background: var(--entergy-purple); color: white; }
     .btn-sum-action.primary:hover { background: var(--entergy-purple-600); }
 
+    /* Agentforce-powered CTA button — used on summary cards that trigger AF zone */
+    .btn-af-action {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.5rem 0.875rem;
+      border: 1.5px solid var(--af-border);
+      border-radius: 4px;
+      background: var(--af-chip-bg);
+      color: var(--af-chip-text);
+      font-size: 12px; font-weight: 700;
+      transition: all .15s; white-space: nowrap; cursor: pointer;
+    }
+    .btn-af-action svg { width: 11px; height: 11px; flex-shrink: 0; transition: fill .15s; }
+    .btn-af-action:hover {
+      background: var(--entergy-purple); color: white; border-color: var(--entergy-purple);
+    }
+    .btn-af-action:hover svg path { fill: white; }
+
     /* ─────────────────────────────────────────────────────────
        DASHBOARD 2-COLUMN LAYOUT
     ───────────────────────────────────────────────────────── */
@@ -488,7 +505,10 @@
         <div class="sum-sub">Due <strong>Sep 5, 2026</strong></div>
         <div class="sum-cta-row">
           <button class="btn-sum-action primary" onclick="return false;">Pay Now</button>
-          <button class="btn-sum-action" onclick="scrollToUsage()">Why is it higher? →</button>
+          <button class="btn-af-action" onclick="explainUsage('highbill')">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+            Why is it higher?
+          </button>
         </div>
       </div>
 
@@ -502,7 +522,10 @@
         </div>
         <div class="sum-sub">vs. July 2026 (688 kWh)</div>
         <div class="sum-cta-row">
-          <button class="btn-sum-action" onclick="scrollToUsage()">Explain my usage →</button>
+          <button class="btn-af-action" onclick="explainUsage('appliance')">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+            Explain my usage
+          </button>
         </div>
       </div>
 
@@ -714,11 +737,11 @@
 
             <p class="af-intro">Ask Entergy Agent about your usage — select a topic:</p>
             <div class="quick-chips" id="usage-chips">
-              <button class="quick-chip" onclick="showUsageTopic('highbill', this)">Why is August high?</button>
-              <button class="quick-chip" onclick="showUsageTopic('compare', this)">Compare to last year</button>
-              <button class="quick-chip" onclick="showUsageTopic('reduce', this)">How can I reduce usage?</button>
-              <button class="quick-chip" onclick="showUsageTopic('rate', this)">Explain my rate charges</button>
-              <button class="quick-chip" onclick="showUsageTopic('appliance', this)">Appliance breakdown</button>
+              <button class="quick-chip" data-topic="highbill" onclick="showUsageTopic('highbill', this)">Why is August high?</button>
+              <button class="quick-chip" data-topic="compare" onclick="showUsageTopic('compare', this)">Compare to last year</button>
+              <button class="quick-chip" data-topic="reduce" onclick="showUsageTopic('reduce', this)">How can I reduce usage?</button>
+              <button class="quick-chip" data-topic="rate" onclick="showUsageTopic('rate', this)">Explain my rate charges</button>
+              <button class="quick-chip" data-topic="appliance" onclick="showUsageTopic('appliance', this)">Appliance breakdown</button>
             </div>
             <div class="af-response" id="usage-response"></div>
             <p class="af-disclosure">Entergy Agent uses your real billing and usage history. Responses are informational — for account-specific changes, <a href="#">visit myEntergy</a> or <a href="#">contact us</a>.</p>
@@ -899,18 +922,20 @@
        SCRIPTS
   ══════════════════════════════════════════════════════════ -->
   <script>
-    // ── Scroll to usage section ────────────────────────────
-    function scrollToUsage() {
-      const zone = document.getElementById('usage-section');
-      if (zone) zone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // ── AF-powered summary card actions → scroll + trigger chip ──
+    function explainUsage(topicKey) {
+      const section = document.getElementById('usage-section');
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(function() {
+        const chip = document.querySelector('#usage-chips [data-topic="' + topicKey + '"]');
+        if (chip) showUsageTopic(topicKey, chip);
         const afZone = document.getElementById('af-usage-zone');
         if (afZone) {
           afZone.style.transition = 'box-shadow 0.4s ease';
-          afZone.style.boxShadow = '0 0 0 3px rgba(133,38,255,0.25)';
+          afZone.style.boxShadow = '0 0 0 3px rgba(133,38,255,0.3)';
           setTimeout(function() { afZone.style.boxShadow = ''; }, 1800);
         }
-      }, 600);
+      }, 650);
     }
 
     // ── Usage topic responses (authenticated — uses real data) ──
