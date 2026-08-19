@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Entergy – Dashboard | Agentforce Concept</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─────────────────────────────────────────────────────────
+       ENTERGY BRAND TOKENS — identical to Make Payment page
+    ───────────────────────────────────────────────────────── */
+    :root {
+      --entergy-purple:     #8526FF;
+      --entergy-purple-dk:  #501799;
+      --entergy-purple-xdk: #18151D;
+      --entergy-purple-lt:  #F3E9FF;
+      --entergy-purple-mid: #CEA8FF;
+      --entergy-purple-600: #6A1ECC;
+      --entergy-red:        #C10B2B;
+      --entergy-white:      #FFFFFF;
+      --entergy-gray-bg:    #F8F8F8;
+      --entergy-gray-border:#CCCCCC;
+      --entergy-text:       #18151D;
+      --entergy-text-lt:    rgba(53,47,60,1);
+      --entergy-link:       #8526FF;
+      --font:               'Montserrat', sans-serif;
+      --af-accent:          #8526FF;
+      --af-bg:              #F9F5FF;
+      --af-border:          #CEA8FF;
+      --af-chip-bg:         #F3E9FF;
+      --af-chip-text:       #501799;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); font-size: 14px; color: var(--entergy-text); background: var(--entergy-gray-bg); line-height: 1.5; }
+    a { color: var(--entergy-link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { font-family: var(--font); cursor: pointer; }
+
+    /* ─────────────────────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────────────────────── */
+    .site-header {
+      background: var(--entergy-white);
+      border-bottom: 1px solid var(--entergy-gray-border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; height: 72px;
+    }
+    .entergy-logo svg { display: block; }
+    .main-nav { display: flex; gap: 0.25rem; }
+    .main-nav a {
+      padding: 0.5rem 1rem; font-size: 13px; font-weight: 600;
+      color: var(--entergy-text); border-radius: 4px;
+      transition: background .15s, color .15s; white-space: nowrap;
+    }
+    .main-nav a:hover { background: var(--entergy-purple-lt); color: var(--entergy-purple); text-decoration: none; }
+    .main-nav a.active { color: var(--entergy-purple); border-bottom: 2px solid var(--entergy-purple); border-radius: 4px 4px 0 0; }
+
+    /* Auth user area (replaces Log In button) */
+    .auth-user { display: flex; align-items: center; gap: 0.75rem; }
+    .auth-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--entergy-purple), var(--entergy-purple-dk));
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .auth-name-wrap { line-height: 1.2; }
+    .auth-name { font-size: 13px; font-weight: 700; color: var(--entergy-text); display: block; }
+    .auth-acct { font-size: 11px; color: rgba(53,47,60,0.5); display: block; }
+    .btn-signout {
+      padding: 0.375rem 0.875rem;
+      border: 1.5px solid var(--entergy-gray-border);
+      border-radius: 4px; background: transparent;
+      color: rgba(53,47,60,0.65); font-size: 12px; font-weight: 600;
+      transition: all .15s;
+    }
+    .btn-signout:hover { border-color: var(--entergy-purple); color: var(--entergy-purple); background: var(--entergy-purple-lt); }
+
+    /* ─────────────────────────────────────────────────────────
+       ACCOUNT STATUS BAR
+    ───────────────────────────────────────────────────────── */
+    .account-bar {
+      background: linear-gradient(135deg, #18151D 0%, #2D0D5C 50%, #501799 100%);
+      color: white; padding: 1.5rem 1.5rem 1.75rem;
+    }
+    .account-bar-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .acct-welcome-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .acct-welcome { font-size: 1.25rem; font-weight: 700; color: white; }
+    .acct-status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9);
+    }
+    .acct-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; flex-shrink: 0; }
+    .acct-meta { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 0.25rem; }
+    .acct-meta-item { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .acct-meta-item strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+    .acct-actions { display: flex; gap: 0.75rem; }
+    .btn-acct-primary {
+      padding: 0.625rem 1.5rem; background: white; border: none;
+      border-radius: 4px; font-size: 13px; font-weight: 700;
+      color: var(--entergy-purple-dk); cursor: pointer; transition: all .15s;
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .btn-acct-primary:hover { background: var(--entergy-purple-lt); text-decoration: none; }
+    .btn-acct-ghost {
+      padding: 0.625rem 1.25rem; background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 4px;
+      font-size: 13px; font-weight: 600; color: white; cursor: pointer;
+      transition: all .15s; text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .btn-acct-ghost:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
+
+    /* ─────────────────────────────────────────────────────────
+       PAGE BODY
+    ───────────────────────────────────────────────────────── */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+    /* ─────────────────────────────────────────────────────────
+       SUMMARY CARDS
+    ───────────────────────────────────────────────────────── */
+    .summary-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem; margin-bottom: 2rem;
+    }
+    .sum-card {
+      background: white; border: 1px solid var(--entergy-gray-border);
+      border-radius: 6px; padding: 1.5rem;
+    }
+    .sum-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: rgba(53,47,60,0.45);
+      margin-bottom: 0.5rem;
+    }
+    .sum-value {
+      font-size: 2.1rem; font-weight: 800; color: var(--entergy-text);
+      line-height: 1.05; letter-spacing: -0.02em;
+    }
+    .sum-unit { font-size: 1rem; font-weight: 600; color: rgba(53,47,60,0.5); margin-left: 3px; }
+    .sum-sub { font-size: 12px; color: rgba(53,47,60,0.55); margin-top: 0.3rem; }
+    .sum-change-up {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #FEF2F2; border-radius: 4px; padding: 2px 7px;
+      font-size: 11px; font-weight: 700; color: var(--entergy-red);
+    }
+    .sum-change-neutral {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #F0FDF4; border-radius: 4px; padding: 2px 7px;
+      font-size: 11px; font-weight: 700; color: #16A34A;
+    }
+    .sum-cta-row { margin-top: 1.1rem; display: flex; gap: 0.625rem; flex-wrap: wrap; }
+    .btn-sum-action {
+      padding: 0.5rem 1rem; border: 1.5px solid var(--entergy-purple);
+      border-radius: 4px; background: transparent; color: var(--entergy-purple);
+      font-size: 12px; font-weight: 700; transition: all .15s; white-space: nowrap;
+    }
+    .btn-sum-action:hover { background: var(--entergy-purple); color: white; }
+    .btn-sum-action.primary { background: var(--entergy-purple); color: white; }
+    .btn-sum-action.primary:hover { background: var(--entergy-purple-600); }
+
+    /* ─────────────────────────────────────────────────────────
+       DASHBOARD 2-COLUMN LAYOUT
+    ───────────────────────────────────────────────────────── */
+    .dash-layout {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 1.5rem; align-items: start;
+    }
+    .dash-main { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ─────────────────────────────────────────────────────────
+       CHART SECTION
+    ───────────────────────────────────────────────────────── */
+    .chart-section {
+      background: white; border: 1px solid var(--entergy-gray-border);
+      border-radius: 6px; padding: 1.75rem;
+    }
+    .chart-section-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .chart-title { font-size: 1rem; font-weight: 700; color: var(--entergy-text); }
+    .chart-range { font-size: 12px; color: rgba(53,47,60,0.5); margin-top: 3px; }
+    .chart-legend { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: rgba(53,47,60,0.6); font-weight: 500; }
+    .legend-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+    .chart-wrap { width: 100%; overflow-x: auto; }
+
+    /* SVG bar hover effect */
+    .chart-bar-past { fill: var(--entergy-purple-mid); transition: fill 0.15s; cursor: default; }
+    .chart-bar-current { fill: var(--entergy-purple); cursor: default; }
+    .chart-bar-group:hover .chart-bar-past { fill: var(--entergy-purple-600); opacity: 0.8; }
+
+    /* ─────────────────────────────────────────────────────────
+       AGENTFORCE ZONE — shared tokens
+    ───────────────────────────────────────────────────────── */
+    .af-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; background: var(--af-chip-bg);
+      border: 1px solid var(--af-border); border-radius: 20px;
+      font-size: 11px; font-weight: 700; color: var(--af-chip-text);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .af-badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    /* Agentforce zone embedded in chart section */
+    .af-zone {
+      margin-top: 1.5rem;
+      background: var(--af-bg);
+      border: 1px solid var(--af-border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+    .af-zone::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--af-accent);
+      border-radius: 8px 0 0 8px;
+    }
+    .af-zone-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .af-zone-title {
+      font-size: 13px; font-weight: 700; color: var(--entergy-purple-dk);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .af-zone-title svg { width: 14px; height: 14px; }
+
+    /* Authenticated data tag — green (vs no-login-tag which is teal) */
+    .real-data-tag {
+      font-size: 11px; color: #166534; font-weight: 600;
+      background: #DCFCE7; border-radius: 3px; padding: 2px 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* Proactive insight row — always-visible, pushed by agent */
+    .af-proactive {
+      background: white; border: 1px solid var(--af-border);
+      border-radius: 6px; padding: 1rem 1.125rem;
+      margin-bottom: 1rem; display: flex; gap: 0.875rem; align-items: flex-start;
+    }
+    .af-proactive-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--entergy-purple-lt); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .af-proactive-icon svg { width: 16px; height: 16px; }
+    .af-proactive-heading {
+      font-size: 13.5px; font-weight: 700; color: var(--entergy-text);
+      margin-bottom: 0.3rem;
+    }
+    .af-proactive-body { font-size: 12.5px; color: rgba(53,47,60,0.75); line-height: 1.55; }
+    .af-proactive-body strong { color: var(--entergy-purple-dk); }
+
+    .af-intro { font-size: 12.5px; color: rgba(53,47,60,0.65); margin-bottom: 0.75rem; }
+    .af-disclosure {
+      font-size: 11px; color: rgba(53,47,60,0.4); margin-top: 0.875rem;
+      font-style: italic; border-top: 1px solid var(--af-border); padding-top: 0.625rem;
+    }
+
+    /* Chips */
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .quick-chip {
+      padding: 0.375rem 0.875rem; background: white;
+      border: 1.5px solid var(--entergy-purple-mid); border-radius: 20px;
+      font-size: 12px; font-weight: 600; color: var(--entergy-purple-dk);
+      cursor: pointer; transition: all .15s;
+    }
+    .quick-chip:hover, .quick-chip.active {
+      background: var(--entergy-purple); color: white; border-color: var(--entergy-purple);
+    }
+
+    /* Inline response */
+    .af-response {
+      display: none; margin-top: 1rem; background: white;
+      border: 1px solid var(--af-border); border-radius: 6px;
+      padding: 1rem; font-size: 13px; line-height: 1.6; color: var(--entergy-text);
+    }
+    .af-response.visible { display: block; }
+    .af-response strong { color: var(--entergy-purple-dk); }
+    .af-response ul { margin: 0.5rem 0 0 1.25rem; }
+    .af-response li { margin-bottom: 0.3rem; }
+    .af-response-footer {
+      margin-top: 0.75rem; padding-top: 0.625rem;
+      border-top: 1px solid var(--entergy-gray-border);
+      font-size: 12px;
+    }
+    .af-response-footer a { color: var(--entergy-purple); font-weight: 600; }
+
+    /* ─────────────────────────────────────────────────────────
+       SIDEBAR
+    ───────────────────────────────────────────────────────── */
+    .dash-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+    .sidebar-card {
+      background: white; border: 1px solid var(--entergy-gray-border);
+      border-radius: 6px; padding: 1.5rem;
+    }
+    .sidebar-card-title {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: rgba(53,47,60,0.45);
+      margin-bottom: 1.1rem;
+    }
+
+    /* Quick action buttons */
+    .qa-btn {
+      width: 100%; display: flex; align-items: center; gap: 0.875rem;
+      padding: 0.875rem 1rem; background: white;
+      border: 1.5px solid var(--entergy-gray-border); border-radius: 6px;
+      margin-bottom: 0.625rem; cursor: pointer; text-align: left;
+      transition: all .15s; text-decoration: none; color: inherit;
+    }
+    .qa-btn:hover { border-color: var(--entergy-purple); background: var(--entergy-purple-lt); text-decoration: none; }
+    .qa-btn:last-child { margin-bottom: 0; }
+    .qa-icon {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--entergy-purple-lt); display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .qa-icon svg { width: 16px; height: 16px; color: var(--entergy-purple); }
+    .qa-text-wrap { flex: 1; }
+    .qa-label { font-size: 13px; font-weight: 700; color: var(--entergy-text); display: block; }
+    .qa-sub { font-size: 11px; color: rgba(53,47,60,0.5); display: block; margin-top: 1px; }
+    .qa-arrow { color: rgba(53,47,60,0.3); font-size: 14px; flex-shrink: 0; }
+
+    /* Recent bills */
+    .bill-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.625rem 0; border-bottom: 1px solid #F0F0F0;
+      font-size: 13px;
+    }
+    .bill-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .bill-row:first-child { padding-top: 0; }
+    .bill-month { font-weight: 600; color: var(--entergy-text); }
+    .bill-kwh { font-size: 11.5px; color: rgba(53,47,60,0.5); }
+    .bill-amount { font-weight: 700; color: var(--entergy-text); }
+
+    /* Billing question drawer (same pattern as Make Payment page) */
+    .billing-drawer {
+      background: var(--af-bg); border: 1px solid var(--af-border);
+      border-radius: 8px; position: relative; overflow: hidden;
+    }
+    .billing-drawer::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--af-accent);
+      border-radius: 8px 0 0 8px; z-index: 1;
+    }
+    .billing-drawer-trigger {
+      width: 100%; padding: 1.125rem 1.25rem;
+      background: none; border: none; text-align: left;
+      cursor: pointer; display: block; transition: background .15s;
+    }
+    .billing-drawer-trigger:hover { background: rgba(133,38,255,0.04); }
+    .bh-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .bh-header-left { flex: 1; }
+    .bh-title { font-size: 13.5px; font-weight: 700; color: var(--entergy-purple-dk); margin-bottom: 2px; }
+    .bh-subtitle { font-size: 11.5px; color: rgba(53,47,60,0.6); }
+    .bh-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .drawer-chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--entergy-purple); transition: transform 0.25s ease; }
+    .billing-drawer-trigger[aria-expanded="true"] .drawer-chevron { transform: rotate(180deg); }
+    .billing-drawer-panel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0 1.25rem; }
+    .billing-drawer-panel.open { max-height: 700px; padding-bottom: 1.125rem; }
+
+    /* ─────────────────────────────────────────────────────────
+       FOOTER — identical to Make Payment page
+    ───────────────────────────────────────────────────────── */
+    .site-footer { background: var(--entergy-purple-xdk); color: rgba(255,255,255,0.6); padding: 2rem 1.5rem; font-size: 12px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,0.55); font-size: 12px; }
+    .footer-links a:hover { color: white; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 1rem; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--entergy-purple-lt); }
+    ::-webkit-scrollbar-thumb { background: var(--entergy-purple-mid); border-radius: 3px; }
+
+    /* ─────────────────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .dash-layout { grid-template-columns: 1fr; }
+      .dash-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    }
+    @media (max-width: 768px) {
+      .summary-row { grid-template-columns: 1fr 1fr; }
+      .account-bar-inner { flex-direction: column; align-items: flex-start; }
+      .acct-actions { width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .summary-row { grid-template-columns: 1fr; }
+      .dash-sidebar { grid-template-columns: 1fr; }
+      .main-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER — authenticated state
+  ══════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="entergy-logo" aria-label="Entergy home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="37" viewBox="0 0 1000 249.98323" role="img" aria-label="Entergy logo">
+          <defs>
+            <linearGradient x1="98.773941" y1="137.549" x2="37.045738" y2="4.5004005" id="logoGradDash" gradientTransform="scale(0.89643299,1.1155323)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#8026FF" offset="25%"/>
+              <stop stop-color="#FF1A58" offset="75%"/>
+            </linearGradient>
+          </defs>
+          <g transform="matrix(1.7361111,0,0,1.7361111,0,-0.0167657)" style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1">
+            <g transform="translate(0,0.009657)" style="fill-rule:nonzero">
+              <path d="m 443.21,58.160343 v 10.83 c -2.18385,-1.045893 -4.57876,-1.576194 -7,-1.55 -4.36,0 -16.77,1.9 -16.77,27.15 v 22.399997 h -11.5 V 58.390343 h 11.5 v 9.05 c 2.53,-6.63 9.51,-10.59 17.7,-10.59 2.08911,0.03914 4.15069,0.484062 6.07,1.31 z m -119.67,46.179997 5.25,9.09 c -4.18083,2.8339 -9.10931,4.36187 -14.16,4.39 -12,0 -17.88,-6.55 -17.88,-20.139997 v -29 H 288 v -10.28 h 8.71 v -18.41 h 11.42 v 18.4 h 18.61 v 10.31 h -18.57 v 29.33 c 0,6.309997 4.44,8.679997 8.12,8.679997 2.92,0.01 5.71,-1.53 7.25,-2.37 z M 212.86,91.830343 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.5,10.91 -15.17,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 196,10.08 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.51,10.91 -15.18,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 123.4,6.4 v 24.539997 c 0,22.52 -13.76,31.3 -31.07,31.3 -14.34,0 -25.6,-6.05 -29.64,-19.57 h 11.5 c 2.73,6.76 9.61,9.73 18.14,9.73 12,0 19.92,-5.69 19.92,-21 v -7.23 c -4,7.59 -12.21,12.1 -22.05,12.1 -15.18,0 -29.64,-10.43 -29.64,-30.349997 0,-17.79 13,-30.83 31.54,-30.83 18.54,0 31.25,12.46 31.25,31.31 z m -11.15,-0.47 c 0,-11.86 -8.06,-20.39 -20.15,-20.39 -12.09,0 -20.24,8.53 -20.24,20.39 0,11.86 8.06,19.799997 20.16,19.799997 12.1,0 20.18,-7.949997 20.18,-19.799997 z m 21.32,36.739997 h 11.26 c 2.73,6.64 8.54,9.73 17,9.73 10.91,0 17.9,-5.22 17.9,-18.5 v -8.88 c -3.77,7.22 -10.87,11.22 -19.65,11.22 -14.58,0 -27,-9.13 -27,-29.639997 v -30 h 11.26 v 30 c 0,12.679997 7,19.089997 17.66,19.089997 10.44,0 17.67,-6.64 17.67,-19.089997 v -30 H 576 v 56.999997 c 0,20.4 -12.92,28.58043 -29.16,28.58043 -13.48,0.0596 -24.74,-6.23043 -28.18,-19.51043 z m -283.85,-65.999997 -0.05,8.9 c 3.68,-7.24 10.79,-10.44 19.56,-10.44 14.59,0 27,9.61 27,30.12 V 117.00034 H 270.09 V 86.990343 c 0,-12.69 -7,-19.09 -17.66,-19.09 -10.44,0 -17.67,6.64 -17.67,19.09 V 116.99034 H 223.5 V 58.390343 Z" style="fill:#231f20"/>
+              <path d="m 3.22,65.990343 c 4.14,-17 17.63,-26.55 35.47,-26.55 17.41,0 31.56,9.36 35.69,26.55 z m 102,-27.47 C 95.010053,20.823852 78.185699,7.9104611 58.451099,2.623269 38.7165,-2.6639232 17.689664,0.10857164 0,10.330343 l 9.71,16.82 c 8.966071,-4.606887 18.920211,-6.958124 29,-6.85 33.95,0 57.45,23.94 57.45,56.58 v 7.62 H 2.57 c 3.05,19.149997 17.41,29.809997 36.12,29.809997 13.93,0 23.72,-4.35 30,-13.71 h 22.85 c -4.682967,11.40099 -13.311915,20.7363 -24.31,26.3 l 9.77,16.86 c 17.699206,-10.20998 30.61455,-27.03615 35.90188,-46.773165 5.28734,-19.737012 2.51307,-40.766268 -7.71188,-58.456832 z" style="fill:url(#logoGradDash)"/>
+            </g>
+          </g>
+        </svg>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html">Billing and payments</a>
+        <a href="#">Outage</a>
+        <a href="#" class="active">Usage</a>
+        <a href="#">Service requests</a>
+        <a href="#">Support</a>
+      </nav>
+
+      <div class="auth-user">
+        <div class="auth-avatar" aria-hidden="true">SM</div>
+        <div class="auth-name-wrap">
+          <span class="auth-name">Sarah M.</span>
+          <span class="auth-acct">Acct #489-122-7466</span>
+        </div>
+        <a href="index.html" class="btn-signout">Sign out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ACCOUNT STATUS BAR
+  ══════════════════════════════════════════════════════════ -->
+  <section class="account-bar" aria-label="Account summary">
+    <div class="account-bar-inner">
+      <div>
+        <div class="acct-welcome-row">
+          <span class="acct-welcome">Welcome back, Sarah</span>
+          <span class="acct-status-pill">
+            <span class="acct-status-dot"></span>
+            Electric Service: Active
+          </span>
+        </div>
+        <div class="acct-meta">
+          <span class="acct-meta-item">Account <strong>#489-122-7466</strong></span>
+          <span class="acct-meta-item">Service address <strong>Baton Rouge, LA 70806</strong></span>
+          <span class="acct-meta-item">Last bill <strong>Jul 5, 2026</strong></span>
+          <span class="acct-meta-item">Next due <strong>Sep 5, 2026</strong></span>
+        </div>
+      </div>
+      <div class="acct-actions">
+        <a href="#" class="btn-acct-primary" onclick="return false;">Pay Bill</a>
+        <a href="#" class="btn-acct-ghost" onclick="return false;">Report Outage</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE BODY
+  ══════════════════════════════════════════════════════════ -->
+  <main class="page-body">
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-row" role="region" aria-label="Account snapshot">
+
+      <!-- Current Bill -->
+      <div class="sum-card">
+        <div class="sum-label">Current Bill</div>
+        <div class="sum-value">$147.23</div>
+        <div class="sum-sub">Due <strong>Sep 5, 2026</strong></div>
+        <div class="sum-cta-row">
+          <button class="btn-sum-action primary" onclick="return false;">Pay Now</button>
+          <button class="btn-sum-action" onclick="scrollToUsage()">Why is it higher? →</button>
+        </div>
+      </div>
+
+      <!-- Usage This Month -->
+      <div class="sum-card">
+        <div class="sum-label">Usage This Month</div>
+        <div style="display:flex;align-items:baseline;gap:0.5rem;">
+          <div class="sum-value">847</div>
+          <span class="sum-unit">kWh</span>
+          <span class="sum-change-up">▲ +23%</span>
+        </div>
+        <div class="sum-sub">vs. July 2026 (688 kWh)</div>
+        <div class="sum-cta-row">
+          <button class="btn-sum-action" onclick="scrollToUsage()">Explain my usage →</button>
+        </div>
+      </div>
+
+      <!-- Account Status -->
+      <div class="sum-card">
+        <div class="sum-label">Account Status</div>
+        <div style="display:flex;align-items:baseline;gap:0.5rem;margin-bottom:0.3rem;">
+          <div class="sum-value" style="font-size:1.5rem;">Active</div>
+          <span class="sum-change-neutral">✓ Current</span>
+        </div>
+        <div class="sum-sub">Electric · Residential · Rate RS-1</div>
+        <div class="sum-cta-row">
+          <button class="btn-sum-action" onclick="return false;">Manage service</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD LAYOUT -->
+    <div class="dash-layout">
+
+      <!-- ── MAIN COLUMN ── -->
+      <div class="dash-main">
+
+        <!-- USAGE CHART SECTION — Agentforce embedded here -->
+        <div class="chart-section" id="usage-section">
+          <div class="chart-section-header">
+            <div>
+              <div class="chart-title">Your Energy Usage</div>
+              <div class="chart-range">August 2025 – August 2026 · Monthly kWh</div>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:var(--entergy-purple-mid);"></div>
+                Past months
+              </div>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:var(--entergy-purple);"></div>
+                Current month
+              </div>
+            </div>
+          </div>
+
+          <!-- SVG BAR CHART — 13 months: Aug'25 → Aug'26 -->
+          <div class="chart-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 760 245"
+                 role="img"
+                 aria-label="Monthly energy usage bar chart, August 2025 through August 2026"
+                 style="width:100%;display:block;min-width:480px;">
+
+              <defs>
+                <linearGradient id="currentBarGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8526FF"/>
+                  <stop offset="100%" stop-color="#501799"/>
+                </linearGradient>
+              </defs>
+
+              <!-- ── Grid lines ── -->
+              <!-- Baseline y=200, scale: 0.185 px/kWh -->
+              <!-- 750 kWh → y=61, 500 kWh → y=107.5, 250 kWh → y=153.75 -->
+              <line x1="42" y1="200" x2="748" y2="200" stroke="#D0D0D0" stroke-width="1"/>
+              <line x1="42" y1="154" x2="748" y2="154" stroke="#EBEBEB" stroke-width="1" stroke-dasharray="4,3"/>
+              <line x1="42" y1="108" x2="748" y2="108" stroke="#EBEBEB" stroke-width="1" stroke-dasharray="4,3"/>
+              <line x1="42" y1="61"  x2="748" y2="61"  stroke="#EBEBEB" stroke-width="1" stroke-dasharray="4,3"/>
+
+              <!-- ── Y-axis labels ── -->
+              <text x="38" y="203" font-family="Montserrat,sans-serif" font-size="9" fill="#AAAAAA" text-anchor="end">0</text>
+              <text x="38" y="157" font-family="Montserrat,sans-serif" font-size="9" fill="#AAAAAA" text-anchor="end">250</text>
+              <text x="38" y="111" font-family="Montserrat,sans-serif" font-size="9" fill="#AAAAAA" text-anchor="end">500</text>
+              <text x="38" y="64"  font-family="Montserrat,sans-serif" font-size="9" fill="#AAAAAA" text-anchor="end">750</text>
+              <text x="38" y="21"  font-family="Montserrat,sans-serif" font-size="9" fill="#AAAAAA" text-anchor="end">kWh</text>
+
+              <!-- ── Aug '25 comparison line (last year peak) ── -->
+              <line x1="53" y1="29.6" x2="737" y2="29.6" stroke="#FF1A58" stroke-width="1" stroke-dasharray="5,4" opacity="0.35"/>
+              <text x="740" y="32" font-family="Montserrat,sans-serif" font-size="8" fill="#FF1A58" opacity="0.6" text-anchor="start">Aug '25 peak</text>
+
+              <!-- ══ PAST BARS (Aug'25–Jul'26) ══ -->
+              <!-- Bar width: 32px. Left positions: 53,107,162,216,270,325,379,433,488,542,596,650 -->
+              <!-- Centers: 69,123,178,232,286,341,395,449,504,558,612,666 -->
+
+              <!-- Aug '25: 921 kWh · h=170.4 · top=29.6 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="53" y="29.6" width="32" height="170.4" rx="2.5"/>
+                <title>Aug 2025: 921 kWh</title>
+              </g>
+              <!-- Sep '25: 784 kWh · h=145.0 · top=55.0 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="107" y="55" width="32" height="145" rx="2.5"/>
+                <title>Sep 2025: 784 kWh</title>
+              </g>
+              <!-- Oct '25: 512 kWh · h=94.7 · top=105.3 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="162" y="105.3" width="32" height="94.7" rx="2.5"/>
+                <title>Oct 2025: 512 kWh</title>
+              </g>
+              <!-- Nov '25: 398 kWh · h=73.6 · top=126.4 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="216" y="126.4" width="32" height="73.6" rx="2.5"/>
+                <title>Nov 2025: 398 kWh</title>
+              </g>
+              <!-- Dec '25: 487 kWh · h=90.1 · top=109.9 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="270" y="109.9" width="32" height="90.1" rx="2.5"/>
+                <title>Dec 2025: 487 kWh</title>
+              </g>
+              <!-- Jan '26: 543 kWh · h=100.5 · top=99.5 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="325" y="99.5" width="32" height="100.5" rx="2.5"/>
+                <title>Jan 2026: 543 kWh</title>
+              </g>
+              <!-- Feb '26: 501 kWh · h=92.7 · top=107.3 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="379" y="107.3" width="32" height="92.7" rx="2.5"/>
+                <title>Feb 2026: 501 kWh</title>
+              </g>
+              <!-- Mar '26: 410 kWh · h=75.9 · top=124.1 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="433" y="124.1" width="32" height="75.9" rx="2.5"/>
+                <title>Mar 2026: 410 kWh</title>
+              </g>
+              <!-- Apr '26: 389 kWh · h=72.0 · top=128.0 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="488" y="128" width="32" height="72" rx="2.5"/>
+                <title>Apr 2026: 389 kWh</title>
+              </g>
+              <!-- May '26: 524 kWh · h=96.9 · top=103.1 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="542" y="103.1" width="32" height="96.9" rx="2.5"/>
+                <title>May 2026: 524 kWh</title>
+              </g>
+              <!-- Jun '26: 662 kWh · h=122.5 · top=77.5 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="596" y="77.5" width="32" height="122.5" rx="2.5"/>
+                <title>Jun 2026: 662 kWh</title>
+              </g>
+              <!-- Jul '26: 688 kWh · h=127.3 · top=72.7 -->
+              <g class="chart-bar-group">
+                <rect class="chart-bar-past" x="650" y="72.7" width="32" height="127.3" rx="2.5"/>
+                <title>Jul 2026: 688 kWh</title>
+              </g>
+
+              <!-- ══ CURRENT BAR — Aug '26: 847 kWh ══ -->
+              <!-- Glow halo -->
+              <rect x="700" y="38.3" width="42" height="166.7" rx="5" fill="#8526FF" opacity="0.08"/>
+              <!-- Main bar: left=705, h=156.7, top=43.3 -->
+              <rect class="chart-bar-current" x="705" y="43.3" width="32" height="156.7" rx="2.5" fill="url(#currentBarGrad)"/>
+              <!-- Value label above current bar -->
+              <text x="721" y="37" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#501799" text-anchor="middle">847</text>
+
+              <!-- ── Month labels (y=217) ── -->
+              <!-- Centers match bar left + 16 -->
+              <text x="69"  y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Aug</text>
+              <text x="123" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Sep</text>
+              <text x="178" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Oct</text>
+              <text x="232" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Nov</text>
+              <text x="286" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Dec</text>
+              <text x="341" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Jan</text>
+              <text x="395" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Feb</text>
+              <text x="449" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Mar</text>
+              <text x="504" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Apr</text>
+              <text x="558" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">May</text>
+              <text x="612" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Jun</text>
+              <text x="666" y="217" font-family="Montserrat,sans-serif" font-size="9.5" fill="#999" text-anchor="middle">Jul</text>
+              <text x="721" y="217" font-family="Montserrat,sans-serif" font-size="9.5" font-weight="700" fill="#501799" text-anchor="middle">Aug</text>
+
+              <!-- ── Year separator and labels ── -->
+              <!-- 2025: bars 0–4, x range 53..302 -->
+              <line x1="53"  y1="227" x2="302" y2="227" stroke="#E5E5E5" stroke-width="1"/>
+              <text x="177" y="236" font-family="Montserrat,sans-serif" font-size="8.5" fill="#C0C0C0" text-anchor="middle">2025</text>
+              <!-- 2026: bars 5–12, x range 325..737 -->
+              <line x1="325" y1="227" x2="737" y2="227" stroke="#E5E5E5" stroke-width="1"/>
+              <text x="531" y="236" font-family="Montserrat,sans-serif" font-size="8.5" fill="#C0C0C0" text-anchor="middle">2026</text>
+
+              <!-- ── "Current" label under current bar ── -->
+              <text x="721" y="236" font-family="Montserrat,sans-serif" font-size="8.5" font-weight="700" fill="#8526FF" text-anchor="middle">Current</text>
+            </svg>
+          </div>
+
+          <!-- ════════════════════════════════════════════════
+               AGENTFORCE ZONE — Usage pattern analysis
+               Authenticated: proactive push, not pull
+          ════════════════════════════════════════════════ -->
+          <div class="af-zone" id="af-usage-zone">
+            <div class="af-zone-header">
+              <span class="af-zone-title">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.8L12 6L8.2 7.2L7 11L5.8 7.2L2 6L5.8 4.8L7 1Z" fill="#501799"/></svg>
+                Entergy Agent · Usage Analysis
+              </span>
+              <span class="real-data-tag">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1a5 5 0 100 10A5 5 0 006 1zm2.5 3.5l-3 3-1.5-1.5" stroke="#166534" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Using your real account data
+              </span>
+            </div>
+
+            <!-- Proactive insight — always visible, agent already analyzed -->
+            <div class="af-proactive">
+              <div class="af-proactive-icon">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#8526FF"/>
+                </svg>
+              </div>
+              <div>
+                <div class="af-proactive-heading">Your August usage is up 23% vs. last month</div>
+                <div class="af-proactive-body">
+                  <strong>Cooling load is the main driver</strong> — Baton Rouge recorded 9 days above 97°F this month, significantly above the seasonal average. Your HVAC ran approximately 18% longer than July. This month's 847 kWh is still below your August 2025 peak of 921 kWh, suggesting your system is performing well relative to last summer.
+                </div>
+              </div>
+            </div>
+
+            <p class="af-intro">Ask Entergy Agent about your usage — select a topic:</p>
+            <div class="quick-chips" id="usage-chips">
+              <button class="quick-chip" onclick="showUsageTopic('highbill', this)">Why is August high?</button>
+              <button class="quick-chip" onclick="showUsageTopic('compare', this)">Compare to last year</button>
+              <button class="quick-chip" onclick="showUsageTopic('reduce', this)">How can I reduce usage?</button>
+              <button class="quick-chip" onclick="showUsageTopic('rate', this)">Explain my rate charges</button>
+              <button class="quick-chip" onclick="showUsageTopic('appliance', this)">Appliance breakdown</button>
+            </div>
+            <div class="af-response" id="usage-response"></div>
+            <p class="af-disclosure">Entergy Agent uses your real billing and usage history. Responses are informational — for account-specific changes, <a href="#">visit myEntergy</a> or <a href="#">contact us</a>.</p>
+          </div>
+
+        </div><!-- /chart-section -->
+      </div><!-- /dash-main -->
+
+      <!-- ── SIDEBAR ── -->
+      <div class="dash-sidebar">
+
+        <!-- Quick Actions -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Quick Actions</div>
+
+          <a href="#" class="qa-btn" onclick="return false;">
+            <div class="qa-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="14" height="11" rx="1.5"/>
+                <path d="M1 7h14"/>
+              </svg>
+            </div>
+            <div class="qa-text-wrap">
+              <span class="qa-label">Pay Bill</span>
+              <span class="qa-sub">$147.23 due Sep 5, 2026</span>
+            </div>
+            <span class="qa-arrow">›</span>
+          </a>
+
+          <a href="#" class="qa-btn" onclick="return false;">
+            <div class="qa-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 1l1.5 4.5H14l-3.5 2.5 1.5 4.5L8 10l-4 2.5 1.5-4.5L2 5.5h4.5z"/>
+              </svg>
+            </div>
+            <div class="qa-text-wrap">
+              <span class="qa-label">Report an Outage</span>
+              <span class="qa-sub">No active outages in your area</span>
+            </div>
+            <span class="qa-arrow">›</span>
+          </a>
+
+          <a href="#" class="qa-btn" onclick="return false;">
+            <div class="qa-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8h12M10 4l4 4-4 4"/>
+              </svg>
+            </div>
+            <div class="qa-text-wrap">
+              <span class="qa-label">Start / Stop / Move</span>
+              <span class="qa-sub">Transfer or end service</span>
+            </div>
+            <span class="qa-arrow">›</span>
+          </a>
+
+          <a href="#" class="qa-btn" onclick="return false;">
+            <div class="qa-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="6"/>
+                <path d="M8 5v3.5l2 2"/>
+              </svg>
+            </div>
+            <div class="qa-text-wrap">
+              <span class="qa-label">Set Up AutoPay</span>
+              <span class="qa-sub">Never miss a due date</span>
+            </div>
+            <span class="qa-arrow">›</span>
+          </a>
+        </div>
+
+        <!-- Recent Bills -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Recent Bills</div>
+          <div class="bill-row">
+            <div>
+              <div class="bill-month">August 2026</div>
+              <div class="bill-kwh">847 kWh · <span class="sum-change-up" style="font-size:10.5px;padding:1px 5px;">▲ +23%</span></div>
+            </div>
+            <div class="bill-amount">$147.23</div>
+          </div>
+          <div class="bill-row">
+            <div>
+              <div class="bill-month">July 2026</div>
+              <div class="bill-kwh">688 kWh</div>
+            </div>
+            <div class="bill-amount">$121.84</div>
+          </div>
+          <div class="bill-row">
+            <div>
+              <div class="bill-month">June 2026</div>
+              <div class="bill-kwh">662 kWh</div>
+            </div>
+            <div class="bill-amount">$116.20</div>
+          </div>
+          <div class="bill-row">
+            <div>
+              <div class="bill-month">May 2026</div>
+              <div class="bill-kwh">524 kWh</div>
+            </div>
+            <div class="bill-amount">$91.54</div>
+          </div>
+          <div style="margin-top:0.875rem;">
+            <a href="#" style="font-size:12px;font-weight:700;color:var(--entergy-purple);">View full billing history →</a>
+          </div>
+        </div>
+
+        <!-- Have a billing question — same drawer pattern as Make Payment -->
+        <div class="sidebar-card" style="padding:0;">
+          <div class="billing-drawer">
+            <button class="billing-drawer-trigger" id="billing-trigger" aria-expanded="false" aria-controls="billing-panel" onclick="toggleBillingDrawer()">
+              <div class="bh-header">
+                <div class="bh-header-left">
+                  <div class="bh-title">Have a billing question?</div>
+                  <div class="bh-subtitle">Get instant answers from Entergy Agent.</div>
+                </div>
+                <div class="bh-header-right">
+                  <div class="af-badge">
+                    <svg viewBox="0 0 12 12" fill="none"><path d="M6 1L7.2 4.8L11 6L7.2 7.2L6 11L4.8 7.2L1 6L4.8 4.8L6 1Z" fill="#501799"/></svg>
+                    Agentforce
+                  </div>
+                  <svg class="drawer-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4,6 9,12 14,6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+            <div class="billing-drawer-panel" id="billing-panel" role="region" aria-labelledby="billing-trigger">
+              <p class="af-intro" style="margin-bottom:0.75rem;">Select a topic:</p>
+              <div class="quick-chips" id="billing-chips" style="margin-bottom:0.75rem;">
+                <button class="quick-chip" onclick="showBillingTopic('highbill', this)">Why is my bill high?</button>
+                <button class="quick-chip" onclick="showBillingTopic('budget', this)">Budget billing</button>
+                <button class="quick-chip" onclick="showBillingTopic('duedate', this)">Payment due date</button>
+                <button class="quick-chip" onclick="showBillingTopic('late', this)">Late payments</button>
+              </div>
+              <div class="af-response" id="billing-response"></div>
+              <p class="af-disclosure">Entergy Agent may make mistakes. For account-specific details, <a href="#">contact us</a>.</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-sidebar -->
+    </div><!-- /dash-layout -->
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER — identical to Make Payment page
+  ══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="30" viewBox="0 0 1000 249.98323" role="img" aria-label="Entergy" style="display:block;margin-bottom:0.875rem;">
+          <defs>
+            <linearGradient x1="98.773941" y1="137.549" x2="37.045738" y2="4.5004005" id="logoGradDashFtr" gradientTransform="scale(0.89643299,1.1155323)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#CEA8FF" offset="25%"/>
+              <stop stop-color="#FF7AAA" offset="75%"/>
+            </linearGradient>
+          </defs>
+          <g transform="matrix(1.7361111,0,0,1.7361111,0,-0.0167657)" style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1">
+            <g transform="translate(0,0.009657)" style="fill-rule:nonzero">
+              <path d="m 443.21,58.160343 v 10.83 c -2.18385,-1.045893 -4.57876,-1.576194 -7,-1.55 -4.36,0 -16.77,1.9 -16.77,27.15 v 22.399997 h -11.5 V 58.390343 h 11.5 v 9.05 c 2.53,-6.63 9.51,-10.59 17.7,-10.59 2.08911,0.03914 4.15069,0.484062 6.07,1.31 z m -119.67,46.179997 5.25,9.09 c -4.18083,2.8339 -9.10931,4.36187 -14.16,4.39 -12,0 -17.88,-6.55 -17.88,-20.139997 v -29 H 288 v -10.28 h 8.71 v -18.41 h 11.42 v 18.4 h 18.61 v 10.31 h -18.57 v 29.33 c 0,6.309997 4.44,8.679997 8.12,8.679997 2.92,0.01 5.71,-1.53 7.25,-2.37 z M 212.86,91.830343 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.5,10.91 -15.17,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 196,10.08 h -51 c 1.66,10.429997 9.49,16.239997 19.68,16.239997 7.59,0 12.92,-2.37 16.36,-7.47 h 12.45 c -4.51,10.91 -15.18,17.9 -28.81,17.9 -18.49,0 -31.53,-13 -31.53,-30.819997 0,-17.82 13,-30.83 31.53,-30.83 18.53,0 31.3,13 31.3,30.83 z m -11.86,-10.08 c -2.25,-9.37 -9.95,-14.46 -19.44,-14.46 -9.72,0 -17.07,5.21 -19.32,14.46 z m 123.4,6.4 v 24.539997 c 0,22.52 -13.76,31.3 -31.07,31.3 -14.34,0 -25.6,-6.05 -29.64,-19.57 h 11.5 c 2.73,6.76 9.61,9.73 18.14,9.73 12,0 19.92,-5.69 19.92,-21 v -7.23 c -4,7.59 -12.21,12.1 -22.05,12.1 -15.18,0 -29.64,-10.43 -29.64,-30.349997 0,-17.79 13,-30.83 31.54,-30.83 18.54,0 31.25,12.46 31.25,31.31 z m -11.15,-0.47 c 0,-11.86 -8.06,-20.39 -20.15,-20.39 -12.09,0 -20.24,8.53 -20.24,20.39 0,11.86 8.06,19.799997 20.16,19.799997 12.1,0 20.18,-7.949997 20.18,-19.799997 z m 21.32,36.739997 h 11.26 c 2.73,6.64 8.54,9.73 17,9.73 10.91,0 17.9,-5.22 17.9,-18.5 v -8.88 c -3.77,7.22 -10.87,11.22 -19.65,11.22 -14.58,0 -27,-9.13 -27,-29.639997 v -30 h 11.26 v 30 c 0,12.679997 7,19.089997 17.66,19.089997 10.44,0 17.67,-6.64 17.67,-19.089997 v -30 H 576 v 56.999997 c 0,20.4 -12.92,28.58043 -29.16,28.58043 -13.48,0.0596 -24.74,-6.23043 -28.18,-19.51043 z m -283.85,-65.999997 -0.05,8.9 c 3.68,-7.24 10.79,-10.44 19.56,-10.44 14.59,0 27,9.61 27,30.12 V 117.00034 H 270.09 V 86.990343 c 0,-12.69 -7,-19.09 -17.66,-19.09 -10.44,0 -17.67,6.64 -17.67,19.09 V 116.99034 H 223.5 V 58.390343 Z" style="fill:rgba(255,255,255,0.85)"/>
+              <path d="m 3.22,65.990343 c 4.14,-17 17.63,-26.55 35.47,-26.55 17.41,0 31.56,9.36 35.69,26.55 z m 102,-27.47 C 95.010053,20.823852 78.185699,7.9104611 58.451099,2.623269 38.7165,-2.6639232 17.689664,0.10857164 0,10.330343 l 9.71,16.82 c 8.966071,-4.606887 18.920211,-6.958124 29,-6.85 33.95,0 57.45,23.94 57.45,56.58 v 7.62 H 2.57 c 3.05,19.149997 17.41,29.809997 36.12,29.809997 13.93,0 23.72,-4.35 30,-13.71 h 22.85 c -4.682967,11.40099 -13.311915,20.7363 -24.31,26.3 l 9.77,16.86 c 17.699206,-10.20998 30.61455,-27.03615 35.90188,-46.773165 5.28734,-19.737012 2.51307,-40.766268 -7.71188,-58.456832 z" style="fill:url(#logoGradDashFtr)"/>
+            </g>
+          </g>
+        </svg>
+        <div class="footer-copy">© 2026 Entergy Services, LLC. All rights reserved.<br>Agentforce Concept Prototype — not a production Entergy product.</div>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Careers</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    // ── Scroll to usage section ────────────────────────────
+    function scrollToUsage() {
+      const zone = document.getElementById('usage-section');
+      if (zone) zone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function() {
+        const afZone = document.getElementById('af-usage-zone');
+        if (afZone) {
+          afZone.style.transition = 'box-shadow 0.4s ease';
+          afZone.style.boxShadow = '0 0 0 3px rgba(133,38,255,0.25)';
+          setTimeout(function() { afZone.style.boxShadow = ''; }, 1800);
+        }
+      }, 600);
+    }
+
+    // ── Usage topic responses (authenticated — uses real data) ──
+    const usageTopics = {
+      highbill: {
+        title: 'Why is August usage high?',
+        content: `<p>Based on your account data, <strong>three factors combined</strong> to push August above average:</p>
+          <ul>
+            <li><strong>Extreme heat:</strong> Baton Rouge had 9 days exceeding 97°F this month — your HVAC system ran 18% longer than July.</li>
+            <li><strong>Billing cycle length:</strong> This cycle covers 32 days vs. July's 28 days, adding approximately 4% to your baseline.</li>
+            <li><strong>Year-over-year context:</strong> Your 847 kWh is still 8% below your August 2025 peak of 921 kWh — your system is performing better than last summer.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">See your full usage breakdown →</a>&nbsp;&nbsp;<a href="#">Schedule a home energy audit</a></div>`
+      },
+      compare: {
+        title: 'August vs. last year',
+        content: `<p>Comparing <strong>August 2026 (847 kWh)</strong> to <strong>August 2025 (921 kWh)</strong>:</p>
+          <ul>
+            <li><strong>Down 74 kWh (−8%)</strong> year-over-year — a meaningful improvement.</li>
+            <li>August 2025 was one of your highest usage months on record, driven by a prolonged heat dome event.</li>
+            <li>Your 12-month average is <strong>571 kWh/month</strong>, and this August sits 48% above that average — consistent with typical summer peaks in South Louisiana.</li>
+            <li>Your lowest month this year was <strong>April (389 kWh)</strong> — your HVAC had minimal load.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Download your usage history (CSV) →</a></div>`
+      },
+      reduce: {
+        title: 'How to reduce your usage',
+        content: `<p>Based on your usage patterns, here are the highest-impact options for your account:</p>
+          <ul>
+            <li><strong>HVAC thermostat:</strong> Raising your setpoint by 2°F during peak hours (2–7 PM) can save 6–8% on cooling costs. A smart thermostat pays back in 12–18 months.</li>
+            <li><strong>Budget Billing:</strong> Smooth out seasonal spikes — your estimated monthly payment would be <strong>$112/month</strong> based on your last 12 months.</li>
+            <li><strong>Time-of-Use rates:</strong> You may qualify for an off-peak rate plan. With your current usage profile, shifting loads to evenings could save $15–25/month.</li>
+            <li><strong>Free Home Energy Check:</strong> Entergy offers a virtual energy audit for residential customers — typical participants save 10–20%.</li>
+          </ul>
+          <div class="af-response-footer"><a href="#">Request a free energy audit →</a>&nbsp;&nbsp;<a href="#">Explore rate plan options</a></div>`
+      },
+      rate: {
+        title: 'Your rate charges explained',
+        content: `<p>Your August bill of $147.23 is calculated under <strong>Rate Schedule RS-1 (Residential)</strong>:</p>
+          <ul>
+            <li><strong>Customer charge:</strong> $9.00/month (fixed, regardless of usage)</li>
+            <li><strong>Energy charge:</strong> 847 kWh × $0.0842/kWh = $71.30</li>
+            <li><strong>Fuel adjustment clause:</strong> 847 kWh × $0.0428/kWh = $36.25 (varies monthly with fuel costs)</li>
+            <li><strong>Transmission & distribution:</strong> $14.18</li>
+            <li><strong>Taxes & fees:</strong> State sales tax, franchise fees, regulatory charges = $16.50</li>
+          </ul>
+          <p style="margin-top:0.5rem;font-size:12px;color:rgba(53,47,60,0.6);">Fuel adjustment clauses fluctuate with natural gas prices and are set by state regulators — Entergy passes these through at cost.</p>
+          <div class="af-response-footer"><a href="#">View your full bill detail →</a>&nbsp;&nbsp;<a href="#">Compare rate plans</a></div>`
+      },
+      appliance: {
+        title: 'Estimated appliance breakdown',
+        content: `<p>Based on your home profile and usage history, your <strong>847 kWh</strong> breaks down approximately as:</p>
+          <ul>
+            <li><strong>HVAC cooling:</strong> ~510 kWh (60%) — primary driver this month</li>
+            <li><strong>Water heater:</strong> ~102 kWh (12%)</li>
+            <li><strong>Refrigerator/freezer:</strong> ~68 kWh (8%)</li>
+            <li><strong>Lighting:</strong> ~42 kWh (5%)</li>
+            <li><strong>Washer/dryer:</strong> ~42 kWh (5%)</li>
+            <li><strong>Other (devices, cooking, etc.):</strong> ~83 kWh (10%)</li>
+          </ul>
+          <p style="margin-top:0.5rem;font-size:12px;color:rgba(53,47,60,0.6);">Estimates based on your home size, weather data, and usage patterns. An in-home audit provides precise breakdowns.</p>
+          <div class="af-response-footer"><a href="#">Get a detailed energy breakdown →</a></div>`
+      }
+    };
+
+    function showUsageTopic(key, el) {
+      document.querySelectorAll('#usage-chips .quick-chip').forEach(function(c) {
+        c.classList.remove('active');
+      });
+      el.classList.add('active');
+      const topic = usageTopics[key];
+      const resp = document.getElementById('usage-response');
+      resp.innerHTML = '<strong>' + topic.title + '</strong><br><br>' + topic.content;
+      resp.classList.add('visible');
+    }
+
+    // ── Billing drawer ─────────────────────────────────────
+    function toggleBillingDrawer() {
+      const trigger = document.getElementById('billing-trigger');
+      const panel = document.getElementById('billing-panel');
+      const expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      panel.classList.toggle('open', !expanded);
+    }
+
+    // ── Billing topic responses ────────────────────────────
+    const billingTopics = {
+      highbill: {
+        title: 'Why is my bill high?',
+        content: `<p>Common reasons: seasonal HVAC load, longer billing cycles, rate adjustments. <a href="#" onclick="showUsageTopic('highbill', document.querySelector('#usage-chips .quick-chip')); scrollToUsage(); return false;">See your specific August breakdown →</a></p>`
+      },
+      budget: {
+        title: 'Budget billing options',
+        content: `<p>Based on your 12-month history, your <strong>Budget Billing amount would be ~$112/month</strong>. Enrollment is available in myEntergy.</p>
+          <div class="af-response-footer"><a href="#">Enroll in Budget Billing →</a></div>`
+      },
+      duedate: {
+        title: 'Your payment due date',
+        content: `<p>Your current bill of <strong>$147.23</strong> is due <strong>September 5, 2026</strong>. AutoPay is not currently active on your account.</p>
+          <div class="af-response-footer"><a href="#">Set up AutoPay →</a></div>`
+      },
+      late: {
+        title: 'Late payment info',
+        content: `<p>A <strong>1.5% late charge</strong> applies to overdue balances. Payment arrangements are available — call 1-800-ENTERGY before your due date.</p>
+          <div class="af-response-footer"><a href="#">Set up a payment arrangement →</a></div>`
+      }
+    };
+
+    function showBillingTopic(key, el) {
+      document.querySelectorAll('#billing-chips .quick-chip').forEach(function(c) {
+        c.classList.remove('active');
+      });
+      el.classList.add('active');
+      const topic = billingTopics[key];
+      const resp = document.getElementById('billing-response');
+      resp.innerHTML = '<strong>' + topic.title + '</strong><br><br>' + topic.content;
+      resp.classList.add('visible');
+    }
+  </script>
+
+</body>
+</html>
